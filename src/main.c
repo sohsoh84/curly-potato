@@ -1,15 +1,8 @@
-#include "configs.h"
+#include "cmdline.h"
+#include "paths.h"
 #include <stdio.h>
 
-int main() {
-        struct Config* config = createConfig();
-
-        FILE* test = fopen("test.conf", "r");
-        readConfigFile(test, config);
-        fclose(test);
-
-        editEntry(config, "shomare", "12");
-        test = fopen("test.conf", "w");
-        writeConfigFile(test, config);
+int main(int argc, char* argv[]) {
+        runCommand(argc, argv);
         return 0;
 }
