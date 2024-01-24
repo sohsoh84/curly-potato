@@ -1,11 +1,16 @@
 #include "config_cmd.h"
 #include "../configs.h"
 #include "../paths.h"
+#include "../dotcupot.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+
+static int is_alias(const char* key) {
+        return strncmp(key, "alias.", 6) == 0;
+}
 
 int configCommand(int argc, char *argv[]) {
         int reqArgs = 2 + 2;
@@ -43,19 +48,16 @@ int configCommand(int argc, char *argv[]) {
         // TODO: throw some errors bruh :)
 
 
-        if (!isGlobal) {
-                fprintf(stderr, "there is no support for local files!"); // TODO:
-                return 1;
-        }
-
         char* filePath = NULL;
-        if (strlen(key) > 6 && key[0] == 'a' && key[1] == 'l' && key[2] == 'i' && key[3] == 'a' 
-                && key[4] == 's' && key[5] == '.') {
-                        key += 6;
+        if (!isGlobal) {
+                if (!dotCupotPath(cwdPath())) {
+                        fprintf(stderr, "there is no cupot repository initalized here!!\n");
+                        return 1;
+                }
 
-               filePath = globalAliasPath();
-        } else filePath = globalConfigPath();
-
+                filePath = (is_alias(key) ? localAliasPath() : localConfigPath()); 
+        } else filePath = (is_alias(key) ? globalAliasPath() : globalConfigPath());
+        
         struct Config* config = createConfig();
         if (fileExists(filePath)) {
                 FILE* file = fopen(filePath, "r");

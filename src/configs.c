@@ -5,7 +5,7 @@
 #include <string.h>
 
 struct Config* createConfig() {
-        struct Config* config = malloc(sizeof(struct Config));
+        Config* config = malloc(sizeof(Config));
         if (config == NULL) {
                 fprintf(stderr, "Memmory allocation failed(createConfig())\n");
                 return NULL;
@@ -15,7 +15,7 @@ struct Config* createConfig() {
         return config;
 }
 
-int addEntry(struct Config *config, const char *key, const char *value) {
+int addEntry(Config *config, const char *key, const char *value) {
         if (config->len >= MAX_CONFIG_LENGHT) {
                 fprintf(stderr, "Error: too much config entries!\n");
                 return 1;
@@ -29,7 +29,7 @@ int addEntry(struct Config *config, const char *key, const char *value) {
 }
 
 // this function adds a new entry if no entry with given key exits
-int editEntry(struct Config *config, const char *key, const char *value) {
+int editEntry(Config *config, const char *key, const char *value) {
         for (int i = 0; i < config->len; i++) {
                 if (!strcmp(config->entries[i].key, key)) {
                         strcpy(config->entries[i].value, value);
@@ -41,7 +41,7 @@ int editEntry(struct Config *config, const char *key, const char *value) {
 }
 
 // returns NULL if it couldnt find the given key
-char *getEntry(struct Config *config, const char *key) {
+char *getEntry(Config *config, const char *key) {
         for (int i = 0; i < config->len; i++)
                 if (!strcmp(config->entries[i].key, key))
                         return config->entries[i].value;

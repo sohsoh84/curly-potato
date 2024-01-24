@@ -11,17 +11,17 @@ struct ConfigEntry {
         char value[MAX_CONFIG_LENGHT];
 };
 
-struct Config {
+typedef struct Config {
         struct ConfigEntry entries[MAX_CONFIG_ENTRIES];
         int len;
-};
+} Config;
 
-struct Config* createConfig();
-int addEntry(struct Config* config, const char* key, const char* value);
-int editEntry(struct Config* config, const char* key, const char* value);
-char* getEntry(struct Config* config, const char* key);
-int readConfigFile(FILE *file, struct Config* config);
-int writeConfigFile(FILE* file, struct Config* config);
+Config* createConfig();
+int addEntry(Config* config, const char* key, const char* value);
+int editEntry(Config* config, const char* key, const char* value);
+char* getEntry(Config* config, const char* key);
+int readConfigFile(FILE *file, Config* config);
+int writeConfigFile(FILE* file, Config* config);
 // void freeConfig(struct Config* config); TODO:
 
 #endif
