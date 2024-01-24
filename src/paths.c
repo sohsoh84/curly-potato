@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <stdio.h>
 #include <string.h>
 #include <libgen.h>
@@ -102,4 +103,8 @@ char* localConfigPath() {
 char* localAliasPath() {
         if (dotCupotPath(cwdPath()) == NULL) return NULL;
         return mergePaths(dotCupotPath(cwdPath()), ALIAS_FILE_NAME);
+}
+
+int makeDirectory(char* path) {
+        return mkdir(path, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
 }

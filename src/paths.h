@@ -14,4 +14,6 @@ int isSubdirectory(const char* parPath, const char* childPath);
 char* localConfigPath(); // TODO: memory management
 char* localAliasPath(); // TODO: memory management
 
+int makeDirectory(char* dirName); // TODO: it should be in another file
+
 #endif
