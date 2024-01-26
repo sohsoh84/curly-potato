@@ -5,5 +5,9 @@
 char* dotCupotPath(char* path);
 char* projectPath(char* path);
 
+char* stagingAreaPath(char* path);
+
 char* projectName(char* path);
+
+void releativePath(char* path, char* destination);
 #endif

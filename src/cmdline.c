@@ -18,5 +18,5 @@ int runCommand(int argc, char* argv[]) {
                 return 1;
         }
 
-        return command_func(argc, argv);
+        return command_func(argc - 2, argv + 2);
 }

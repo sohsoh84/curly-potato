@@ -1,0 +1,4 @@
+remove all staging area backups after commit? (should you?)
+git add --redo
+alias
+git -n with directories

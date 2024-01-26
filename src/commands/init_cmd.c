@@ -11,6 +11,7 @@ int initCommand(int argc, char *argv[]) {
 
         if (dotCupotPath(cwdPath()) != NULL) {
                 fprintf(stderr, "there is already a cupot repository in this directory or one of it's parents!\n");
+                return 1;
         }
 
         makeDirectory(".cupot");

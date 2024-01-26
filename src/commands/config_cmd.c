@@ -8,12 +8,14 @@
 #include <stdbool.h>
 #include <string.h>
 
+// TODO: check with new argmuent structure
+
 static int is_alias(const char* key) {
         return strncmp(key, "alias.", 6) == 0;
 }
 
 int configCommand(int argc, char *argv[]) {
-        int reqArgs = 2 + 2;
+        int reqArgs = 2;
         if (argc < reqArgs) {
                 fprintf(stderr, "Not enough arguments!\n");
                 return 1;
@@ -21,7 +23,7 @@ int configCommand(int argc, char *argv[]) {
 
         bool isGlobal = false;
 
-        int argPtr = 2;
+        int argPtr = 0;
         if (!strcmp(argv[argPtr], "--global")) {
                 argPtr++;
                 reqArgs++;
