@@ -14,5 +14,7 @@ int initCommand(int argc, char *argv[]) {
         }
 
         makeDirectory(".cupot");
+        makeDirectory(".cupot/staging_area");
+        printf("cupot repository initialized successfully!\n");
         return 0;
 }

@@ -45,7 +45,8 @@ int fileExists(const char* filePath) {
         return access(filePath, F_OK) != -1;
 }
 
-const char* dirName(const char* path) {
+char* dirName(const char* path_) {
+        char* path = strdup(path_);
         char* pathCopy = strdup(path);
         if (pathCopy == NULL) {
                 perror("Error copying path");
@@ -53,10 +54,9 @@ const char* dirName(const char* path) {
         }
 
         char* parentDir = dirname(pathCopy);
-        const char* result = strdup(parentDir);
         free(pathCopy);
 
-        return result;
+        return parentDir;
 }
 
 int arePathsEqual(const char *path1, const char *path2) {
@@ -107,4 +107,35 @@ char* localAliasPath() {
 
 int makeDirectory(char* path) {
         return mkdir(path, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+}
+
+int suffixPath(char *destination, char *path, char *prefix) {
+        char real_path[MAX_PATH_LEN], real_prefix[MAX_PATH_LEN];
+        realpath(path, real_path);
+        realpath(prefix, real_prefix);
+
+        if (strcmp(real_path, real_prefix) == 0) {
+                strcpy(destination, ".");
+                return 0;
+        }
+
+        int len = strlen(real_prefix);
+        real_prefix[len + 1] = '\0';
+        real_prefix[len] = '/';
+
+        if (strncmp(real_path, real_prefix, len + 1) == 0) {
+                strcpy(destination, real_path + len + 1);
+                return 0;
+        }
+
+        perror("prefix_path isn't a prefix of real_path"); 
+        return 1;
+}
+
+int isDirectory(char *path) {
+        struct stat statbuf;
+        if (stat(path, &statbuf) != 0)
+                return 0;
+        
+        return S_ISDIR(statbuf.st_mode);
 }
