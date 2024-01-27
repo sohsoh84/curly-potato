@@ -5,6 +5,7 @@
 #include "commands/init.h"
 #include "commands/add.h"
 #include "commands/reset.h"
+#include "commands/commit.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -15,6 +16,10 @@ int runCommand(int argc, char* argv[]) {
         else if (!strcmp(argv[1], "init")) command_func = initCommand;
         else if (!strcmp(argv[1], "add")) command_func = addCommand;
         else if (!strcmp(argv[1], "reset")) command_func = resetCommand;
+        else if (!strcmp(argv[1], "commit")) command_func = commitCommand;
+        else if (!strcmp(argv[1], "set")) command_func = setCommand;
+        else if (!strcmp(argv[1], "replace")) command_func = replaceCommand;
+        else if (!strcmp(argv[1], "remove")) command_func = removeCommand;
         else {
                 fprintf(stderr, "Invalid Command!\n");
                 return 1;

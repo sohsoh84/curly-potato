@@ -73,3 +73,13 @@ int stagingStatus(char *complete_path) {
         }
         return 0;
 }
+
+int clearStageingAreas() {
+        removeStage(STAGE_NAME);
+        for (int i = 0; i < STAGING_AREA_BACKUP_SIZE; i++)
+                if (fileExists(mergePaths(dotCupotPath(cwdPath()), ith_backup_stage(i))))
+                        removeStage(ith_backup_stage(i));
+
+        makeDirectory(stagingAreaPath(cwdPath()));
+        return 0;
+}

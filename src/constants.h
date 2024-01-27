@@ -2,11 +2,19 @@
 #define CONSTANTS_H
 
 #define MAX_PATH_LEN            4096
+#define COMMIT_ID_LEN           20
 
 static char CONFIG_FILE_NAME[] = ".cupot_conf";
 static char ALIAS_FILE_NAME[] = ".cupot_alias";
 static char STAGE_NAME[] = "staging_area";
 static char BACKUP_STAGE_NAME[] = ".staging_area";
+static char COMMITS_NAME[] = "commits";
+static char COMMIT_CONF_FILE[] = "commit.conf";
+static char COMMIT_MESSAGE_ALIAS[] = "messages.alias";
+
+#define MAX_CONFIG_LENGHT       100
+#define MAX_CONFIG_ENTRIES      20    
+#define MAX_COMMIT_MESSAGE_LEN  1024
 
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"      /* Black */

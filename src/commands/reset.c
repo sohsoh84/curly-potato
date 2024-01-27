@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "commit.h"
 
 static int reset(char* file_path) {
         glob_t globbuf;

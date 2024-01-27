@@ -1,7 +1,15 @@
 #include "init.h"
 #include "../paths.h"
 #include "../dotcupot.h"
+#include "../commits.h"
+#include "../configs.h"
 #include <stdio.h>
+
+char* createInitCommit(char* name, char* email) {
+        CommitConfigs* configs = createCommitConfigs("", "cupot Init Commit :')", name, email);
+        commit(mergePaths(stagingAreaPath(cwdPath()), projectName(cwdPath())), configs);
+        return configs->id;
+}
 
 int initCommand(int argc, char *argv[]) {
         if (!isSubdirectory(userHomePath(), cwdPath())) {
@@ -14,8 +22,27 @@ int initCommand(int argc, char *argv[]) {
                 return 1;
         }
 
+        char* name = dotCupotConfigEntry("user.name");
+        char* email = dotCupotConfigEntry("user.email");
+
+        if (!name) {
+                fprintf(stderr, "you should set user.name variable!\n");
+                return 1;
+        }
+
+        if (!email) {
+                fprintf(stderr, "you should set user.email variable!\n");
+                return 1;
+        }
+
+
         makeDirectory(".cupot");
         makeDirectory(".cupot/staging_area");
+        makeDirectory(mergePaths(".cupot/staging_area", projectName(cwdPath())));
+        makeDirectory(".cupot/commits");
+
+        char* head_id = createInitCommit(name, email);
+        writeHead(head_id);
         printf("cupot repository initialized successfully!\n");
         return 0;
 }

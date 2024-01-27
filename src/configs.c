@@ -40,6 +40,22 @@ int editEntry(Config *config, const char *key, const char *value) {
         return addEntry(config, key, value);
 }
 
+int removeEntry(Config *config, const char* key) {
+        for (int i = 0; i < config->len; i++) {
+                if (!strcmp(config->entries[i].key, key)) {
+                        for (int j = i; j < config->len - 1; j++) {
+                                strcpy(config->entries[j].key, config->entries[j + 1].key);
+                                strcpy(config->entries[j].value, config->entries[j + 1].value);
+                        }
+
+                        config->len--;
+                        return 1;
+                }
+        }
+
+        return 0;
+}
+
 // returns NULL if it couldnt find the given key
 char *getEntry(Config *config, const char *key) {
         for (int i = 0; i < config->len; i++)

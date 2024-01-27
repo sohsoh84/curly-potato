@@ -22,6 +22,6 @@ int suffixPath(char* destination, char* path, char* prefix);
 
 int isDirectory(char* path);
 
-
+int isDirectoryEmpty(char* path);
 
 #endif

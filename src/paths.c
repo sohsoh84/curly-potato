@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <stdio.h>
 #include <string.h>
+#include <dirent.h>
 #include <libgen.h>
 #include "constants.h"
 #include "dotcupot.h"
@@ -139,3 +140,23 @@ int isDirectory(char *path) {
         
         return S_ISDIR(statbuf.st_mode);
 }
+
+int isDirectoryEmpty(char *path) {
+        DIR *dir = opendir(path);
+        if (!dir) {
+                return 1;
+        }
+
+        struct dirent *entry;
+        int count = 0;
+
+        while ((entry = readdir(dir)) != NULL) {
+                if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
+                        count++;
+                }
+        }
+
+        closedir(dir);
+        return count == 0;
+}
+
