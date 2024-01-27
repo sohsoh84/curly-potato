@@ -1,4 +1,4 @@
-#include "config_cmd.h"
+#include "config.h"
 #include "../configs.h"
 #include "../paths.h"
 #include "../dotcupot.h"

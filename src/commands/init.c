@@ -1,4 +1,4 @@
-#include "init_cmd.h"
+#include "init.h"
 #include "../paths.h"
 #include "../dotcupot.h"
 #include <stdio.h>

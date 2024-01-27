@@ -1,4 +1,4 @@
-#include "stage_cmd.h"
+#include "add.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -136,7 +136,7 @@ char* stagingStatusString(char* directoryName, int n, int lvl, int* total_unstag
         closedir(dir);
 }
 
-int stageCommand(int argc, char *argv[]) {
+int addCommand(int argc, char *argv[]) {
         if (!dotCupotPath(cwdPath())) {
                 fprintf(stderr, "you are not in a cupot repository!!\n");
                 return 1;

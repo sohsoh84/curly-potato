@@ -1,4 +1,4 @@
-#include "intro_cmd.h"
+#include "cupot.h"
 #include <stdio.h>
 
 const static char ASCII_ART_STR[] = "\
@@ -34,7 +34,7 @@ const static char ASCII_ART_STR[] = "\
 000000000000000000000000000000000000000000000000000000000000\n\
 ";
 
-int introCommand(int argc, char* argv[]) {
+int cupotCommand(int argc, char* argv[]) {
         printf("This is cupot, your cute \"curly potato\" :')\n%s", ASCII_ART_STR);
         return 0;
 }
