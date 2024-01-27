@@ -4,6 +4,7 @@
 #include "commands/config.h"
 #include "commands/init.h"
 #include "commands/add.h"
+#include "commands/reset.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -13,6 +14,7 @@ int runCommand(int argc, char* argv[]) {
         else if (!strcmp(argv[1], "config")) command_func = configCommand;
         else if (!strcmp(argv[1], "init")) command_func = initCommand;
         else if (!strcmp(argv[1], "add")) command_func = addCommand;
+        else if (!strcmp(argv[1], "reset")) command_func = resetCommand;
         else {
                 fprintf(stderr, "Invalid Command!\n");
                 return 1;

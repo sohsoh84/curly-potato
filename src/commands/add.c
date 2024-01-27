@@ -106,6 +106,8 @@ char* stagingStatusString(char* directoryName, int n, int lvl, int* total_unstag
                         free(result);
                         result = tmp;
 
+                        if (!fileExists(stageFilePath(filePath)))
+                                tmp_unstaged++;
                         char status_[50];
                         strcpy(status_, (tmp_unstaged ?  RED " unstaged" RESET "\n" : GREEN " staged" RESET "\n")); // TODO: more complex status
                         tmp = concat(result, status_);

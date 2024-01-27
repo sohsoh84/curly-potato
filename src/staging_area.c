@@ -50,6 +50,16 @@ int undoBackupStagingArea() {
         return 0;
 }
 
+char* stageFilePath(char* complete_path) {
+        char real_path[MAX_PATH_LEN];
+        realpath(complete_path, real_path);
+
+        char path[MAX_PATH_LEN];
+        releativePath(real_path, path);
+        char* stage_path = stagingAreaPath(cwdPath());
+        return mergePaths(stage_path, path);
+}
+
 int stagingStatus(char *complete_path) {
         if (!fileExists(complete_path)) return -1;
 
