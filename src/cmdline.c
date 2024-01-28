@@ -8,6 +8,7 @@
 #include "commands/commit.h"
 #include "commands/status.h"
 #include "commands/log.h"
+#include "commands/branch.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -24,6 +25,7 @@ int runCommand(int argc, char* argv[]) {
         else if (!strcmp(argv[1], "remove")) command_func = removeCommand;
         else if (!strcmp(argv[1], "status")) command_func = statusCommand;
         else if (!strcmp(argv[1], "log")) command_func = logCommand;
+        else if (!strcmp(argv[1], "branch")) command_func = branchCommand;
         else {
                 fprintf(stderr, "Invalid Command!\n");
                 return 1;

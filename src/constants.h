@@ -19,6 +19,7 @@ static char MASTER_BRANCH_NAME[] = "master";
 #define MAX_CONFIG_LENGHT       100
 #define MAX_CONFIG_ENTRIES      20    
 #define MAX_COMMIT_MESSAGE_LEN  1024
+#define MAX_BRANCHES            128
 
 #define MAX(a,b)                (a) > (b) ? (a) : (b)
 

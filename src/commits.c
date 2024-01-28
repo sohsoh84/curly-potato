@@ -28,12 +28,13 @@ CommitConfigs *createCommitConfigs(char *parent_id, char* branch, char *message,
         time_t now = time(NULL);
         strcpy(configs->time, ctime(&now));
         strcpy(configs->branch_name, branch);
+
         strcpy(configs->author_name, author_name);
         strcpy(configs->author_email, author_email);
         return configs;
 }
 
-int commit(char* path, CommitConfigs* configs) {
+int createBaseCommitFiles(CommitConfigs *configs) {
         char* commit_path = mergePaths(commitsAreaPath(cwdPath()), configs->id);
 
         if (makeDirectory(commit_path)) {
@@ -49,8 +50,19 @@ int commit(char* path, CommitConfigs* configs) {
 
         fwrite(configs, sizeof(CommitConfigs), 1, configFile);
         fclose(configFile);
+        return 0;
+}
 
+int commit(char* path, CommitConfigs* configs) {
+        char* commit_path = mergePaths(commitsAreaPath(cwdPath()), configs->id);
+        if (createBaseCommitFiles(configs)) return 1;
         return copyDirWithName(path, commit_path);
+}
+
+int emptyCommit(CommitConfigs* configs) {
+        char* commit_path = mergePaths(commitsAreaPath(cwdPath()), configs->id);
+        if (createBaseCommitFiles(configs)) return 1;
+        return makeDirectory(mergePaths(commit_path, projectName(cwdPath())));
 }
 
 CommitConfigs* getCommitConfigs(char* commit_id) {

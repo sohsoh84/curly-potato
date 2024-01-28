@@ -8,7 +8,7 @@
 
 char* createInitCommit(char* name, char* email) {
         CommitConfigs* configs = createCommitConfigs("", MASTER_BRANCH_NAME, "cupot Init Commit :')", name, email);
-        commit(mergePaths(stagingAreaPath(cwdPath()), projectName(cwdPath())), configs);
+        emptyCommit(configs);
         return configs->id;
 }
 

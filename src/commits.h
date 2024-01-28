@@ -18,6 +18,7 @@ typedef struct CommitConfigs CommitConfigs;
 CommitConfigs *createCommitConfigs(char *parent_id, char* branch, char *message, char* author_name, char *author_email);
 
 int commit(char* path, CommitConfigs* configs);
+int emptyCommit(CommitConfigs* configs);
 
 CommitConfigs* getCommitConfigs(char* commit_id);
 
