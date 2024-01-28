@@ -3,10 +3,11 @@
 #include "../dotcupot.h"
 #include "../commits.h"
 #include "../configs.h"
+#include "../constants.h"
 #include <stdio.h>
 
 char* createInitCommit(char* name, char* email) {
-        CommitConfigs* configs = createCommitConfigs("", "cupot Init Commit :')", name, email);
+        CommitConfigs* configs = createCommitConfigs("", MASTER_BRANCH_NAME, "cupot Init Commit :')", name, email);
         commit(mergePaths(stagingAreaPath(cwdPath()), projectName(cwdPath())), configs);
         return configs->id;
 }

@@ -4,6 +4,8 @@
 #define MAX_PATH_LEN            4096
 #define COMMIT_ID_LEN           20
 
+#include <string.h>
+
 static char CONFIG_FILE_NAME[] = ".cupot_conf";
 static char ALIAS_FILE_NAME[] = ".cupot_alias";
 static char STAGE_NAME[] = "staging_area";
@@ -12,12 +14,18 @@ static char COMMITS_NAME[] = "commits";
 static char COMMIT_CONF_FILE[] = "commit.conf";
 static char COMMIT_MESSAGE_ALIAS[] = "messages.alias";
 static char TEMP_LATEST_VERSION[] = "lstversion";
+static char MASTER_BRANCH_NAME[] = "master";
 
 #define MAX_CONFIG_LENGHT       100
 #define MAX_CONFIG_ENTRIES      20    
 #define MAX_COMMIT_MESSAGE_LEN  1024
 
 #define MAX(a,b)                (a) > (b) ? (a) : (b)
+
+static void strip(char* s) {
+        while (strlen(s) && (s[strlen(s) - 1] == ' ' || s[strlen(s) - 1] == '\n'))
+                s[strlen(s) - 1] = '\0';
+}
 
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"      /* Black */

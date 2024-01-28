@@ -3,6 +3,8 @@
 #include "dotcupot.h"
 #include "syscalls.h"
 #include "paths.h"
+
+#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,7 +16,7 @@ char random_char() {
         return (char) (x - 10 + 'a');
 }
 
-CommitConfigs *createCommitConfigs(char *parent_id, char *message, char* author_name, char* author_email) {
+CommitConfigs *createCommitConfigs(char *parent_id, char* branch, char *message, char* author_name, char* author_email) {
         CommitConfigs *configs = malloc(sizeof(CommitConfigs));
         configs->id[COMMIT_ID_LEN] = '\0';
         for (int i = 0; i < COMMIT_ID_LEN; i++)
@@ -25,9 +27,9 @@ CommitConfigs *createCommitConfigs(char *parent_id, char *message, char* author_
 
         time_t now = time(NULL);
         strcpy(configs->time, ctime(&now));
+        strcpy(configs->branch_name, branch);
         strcpy(configs->author_name, author_name);
         strcpy(configs->author_email, author_email);
-
         return configs;
 }
 
@@ -61,4 +63,64 @@ CommitConfigs* getCommitConfigs(char* commit_id) {
 
         fread(configs, sizeof(CommitConfigs), 1, file);
         return configs;
+}
+
+int getCommitCounts() {
+        DIR *dir;
+        struct dirent *dp;
+
+        if ((dir = opendir(commitsAreaPath(cwdPath()))) == NULL) {
+                printf("Could not open directory in commit Counts\n");
+                return 0;
+        }
+
+        int result = 0;
+        while ((dp = readdir(dir)) != NULL) {
+                if (dp->d_type == DT_DIR) {
+                        if (!strcmp(dp -> d_name, ".")) continue;
+                        if (!strcmp(dp -> d_name, "..")) continue;
+                        result++;
+                }
+        }
+
+        closedir(dir);
+        return result;
+}
+
+char** getAllCommitIDs() {
+        int cnt = getCommitCounts();
+        char** result = (char**) malloc(sizeof(char*) * cnt);
+        
+        DIR *dir;
+        struct dirent *dp;
+
+        if ((dir = opendir(commitsAreaPath(cwdPath()))) == NULL) {
+                printf("Could not open directory in commit IDS\n");
+                return NULL;
+        }
+
+        int ind = 0;
+        while ((dp = readdir(dir)) != NULL) {
+                if (dp->d_type == DT_DIR) {
+                        if (!strcmp(dp -> d_name, ".")) continue;
+                        if (!strcmp(dp -> d_name, "..")) continue;
+
+                        char* commit_id = (char*) malloc(COMMIT_ID_LEN + 1);
+                        strcpy(commit_id, dp -> d_name);
+                        result[ind++] = commit_id;
+                }
+        }
+
+        closedir(dir);
+        return result;
+}
+
+CommitConfigs **getAllCommitConfigs() {
+        int cnt = getCommitCounts();
+        CommitConfigs** result = (CommitConfigs **) malloc(sizeof(CommitConfigs*) * cnt);
+        char** commitIDs = getAllCommitIDs();
+        for (int i = 0; i < cnt; i++)
+                result[i] = getCommitConfigs(commitIDs[i]);
+
+        return result;
 }

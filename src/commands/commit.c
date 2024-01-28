@@ -65,7 +65,8 @@ int commitCommand(int argc, char *argv[]) {
                 return 1;
         }
 
-        CommitConfigs* config = createCommitConfigs(getHead(), commit_message, name, email);
+        CommitConfigs* config = createCommitConfigs(getHead(), getCommitConfigs(getHead())->branch_name, 
+                commit_message, name, email);
         commit(mergePaths(stagingAreaPath(cwdPath()), projectName(cwdPath())), config);
         writeHead(config->id);
         clearStageingAreas();

@@ -5,6 +5,7 @@
 
 struct CommitConfigs {
         char id[COMMIT_ID_LEN + 1];
+        char branch_name[MAX_CONFIG_LENGHT];
         char author_name[MAX_CONFIG_LENGHT];
         char author_email[MAX_CONFIG_LENGHT];
         char time[MAX_CONFIG_LENGHT];
@@ -14,10 +15,14 @@ struct CommitConfigs {
 
 typedef struct CommitConfigs CommitConfigs;
 
-CommitConfigs *createCommitConfigs(char *parent_id, char *message, char* author_name, char *author_email);
+CommitConfigs *createCommitConfigs(char *parent_id, char* branch, char *message, char* author_name, char *author_email);
 
 int commit(char* path, CommitConfigs* configs);
 
 CommitConfigs* getCommitConfigs(char* commit_id);
+
+int getCommitCounts();
+char** getAllCommitIDs();
+CommitConfigs** getAllCommitConfigs();
 
 #endif
