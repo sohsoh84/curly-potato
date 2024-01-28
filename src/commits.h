@@ -18,13 +18,6 @@ CommitConfigs *createCommitConfigs(char *parent_id, char *message, char* author_
 
 int commit(char* path, CommitConfigs* configs);
 
-CommitConfigs* getCommitConfigs(char* commit_id) {
-        CommitConfigs* configs = (CommitConfigs*) malloc(sizeof(CommitConfigs));
-        FILE *fp = fopen(COMMIT_FILE, "rb");
-        if (fp == NULL) {
-                return NULL;
-        }
+CommitConfigs* getCommitConfigs(char* commit_id);
 
-        return configs;
-}
 #endif

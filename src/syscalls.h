@@ -6,4 +6,6 @@ int removeFileDir(char* path);
 int copyFileDir(char* src, char* dest);
 
 int copyDirWithName(char* src, char* dest);
+
+int copyDirWithoutOverwrite(char *src, char *dest);
 #endif

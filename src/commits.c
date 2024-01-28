@@ -47,6 +47,18 @@ int commit(char* path, CommitConfigs* configs) {
 
         fwrite(configs, sizeof(CommitConfigs), 1, configFile);
         fclose(configFile);
-        
+
         return copyDirWithName(path, commit_path);
+}
+
+CommitConfigs* getCommitConfigs(char* commit_id) {
+        CommitConfigs* configs = (CommitConfigs*) malloc(sizeof(CommitConfigs));
+        FILE *file = fopen(mergePaths(mergePaths(commitsAreaPath(cwdPath()), commit_id), COMMIT_CONF_FILE), "rb");
+        if (!file) {
+                printf("Couldn't open the commit\n");
+                return NULL;
+        }
+
+        fread(configs, sizeof(CommitConfigs), 1, file);
+        return configs;
 }

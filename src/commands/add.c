@@ -40,7 +40,7 @@ static int addToStageingArea(char* stage_path_, char* file_path_) {
         if (removeFileDir(dest_path)) return 1;
         if (copyFileDir(file_path, dest_path)) return 1;
         removeFileDir(mergePaths(mergePaths(stage_path, projectName(file_path)), ".cupot")); // this line is needed to remove the .cupot file from the staging area
-        printf("%s added to staging area\n", dest_path);
+        printf("%s added to staging area\n", relative_path);
         return 0;
 }
 
