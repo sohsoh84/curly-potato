@@ -16,7 +16,7 @@ char* dotCupotConfigEntry(char* key);
 
 char* commitMessageAliasPath(char* path);
 
-char* getHead(); // TODO: implement this shit
+char* getCWB(); // TODO: implement this shit
 
-int writeHead(char* head_id);
+int writeCWB(char* branch_name);
 #endif

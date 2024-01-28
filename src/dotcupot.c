@@ -67,11 +67,11 @@ char *dotCupotConfigEntry(char *key) {
         return value;
 }
 
-char *getHead() {
-        return tryReadConfigEntry("head", localConfigPath());
+char* getCWB() {
+        return tryReadConfigEntry("cwb", localConfigPath());
 }
 
-int writeHead(char* head_id) {
+int writeCWB(char* branch_name) {
         Config* cupotConfig = createConfig();
         FILE* file = fopen(localConfigPath(), "r");
         if (file)
@@ -79,7 +79,7 @@ int writeHead(char* head_id) {
         fclose(file);
 
         file = fopen(localConfigPath(), "w");
-        editEntry(cupotConfig, "head", head_id);
+        editEntry(cupotConfig, "cwb", branch_name);
         writeConfigFile(file, cupotConfig);
         fclose(file);
         return 0;

@@ -3,6 +3,7 @@
 #include "dotcupot.h"
 #include "syscalls.h"
 #include "paths.h"
+#include "utils.h"
 
 #include <dirent.h>
 #include <stdio.h>
@@ -133,6 +134,16 @@ CommitConfigs **getAllCommitConfigs() {
         char** commitIDs = getAllCommitIDs();
         for (int i = 0; i < cnt; i++)
                 result[i] = getCommitConfigs(commitIDs[i]);
+
+        for (int i = 0; i < cnt; i++) {
+                for (int j = 0; j < cnt - 1; j++) {
+                        if (compareTimes(result[j]->time, result[j + 1]->time)) {
+                                CommitConfigs* tmp = result[j];
+                                result[j] = result[j + 1];
+                                result[j + 1] = tmp;
+                        }
+                }
+        }
 
         return result;
 }

@@ -4,6 +4,7 @@
 #include "../paths.h"
 #include "../staging_area.h"
 #include "../configs.h"
+#include "../vcs.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -65,10 +66,9 @@ int commitCommand(int argc, char *argv[]) {
                 return 1;
         }
 
-        CommitConfigs* config = createCommitConfigs(getHead(), getCommitConfigs(getHead())->branch_name, 
+        CommitConfigs* config = createCommitConfigs(getHead() -> id, getHead()->branch_name, 
                 commit_message, name, email);
         commit(mergePaths(stagingAreaPath(cwdPath()), projectName(cwdPath())), config);
-        writeHead(config->id);
         clearStageingAreas();
         printf(GREEN "Commited successfully!\n" RESET "Commit id: %s\nCommit time: %s\n", config -> id, config -> time);
 

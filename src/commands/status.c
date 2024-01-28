@@ -115,7 +115,7 @@ int statusCommand(int argc, char *argv[]) {
                 starting_path = projectPath(cwdPath());
         }
 
-        buildProjectFromCommit(mergePaths(dotCupotPath(cwdPath()), TEMP_LATEST_VERSION), getHead());
+        buildProjectFromCommit(mergePaths(dotCupotPath(cwdPath()), TEMP_LATEST_VERSION), getHead()->id);
         char* lastest_version_path = mergePaths(mergePaths(dotCupotPath(cwdPath()), TEMP_LATEST_VERSION), 
                 projectName(cwdPath()));
 

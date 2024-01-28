@@ -28,3 +28,14 @@ int buildProjectFromCommit(char* path, char* commit_id) {
         makeDirectory(path);
         return addFilesFromCommit(path, commit_id);
 }
+
+CommitConfigs *getHead() {
+        char* cur_branch = getCWB();
+        int cnt = getCommitCounts();
+        CommitConfigs** all_commits = getAllCommitConfigs();
+        for (int i = 0; i < cnt; i++)
+                if (!strcmp(cur_branch, all_commits[i]->branch_name))
+                        return all_commits[i];
+
+        return NULL;
+}

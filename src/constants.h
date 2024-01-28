@@ -23,11 +23,6 @@ static char MASTER_BRANCH_NAME[] = "master";
 
 #define MAX(a,b)                (a) > (b) ? (a) : (b)
 
-static void strip(char* s) {
-        while (strlen(s) && (s[strlen(s) - 1] == ' ' || s[strlen(s) - 1] == '\n'))
-                s[strlen(s) - 1] = '\0';
-}
-
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"      /* Black */
 #define RED     "\033[31m"      /* Red */

@@ -4,8 +4,10 @@
 #include "../dotcupot.h"
 #include "../paths.h"
 #include "../commits.h"
+#include "../vcs.h"
 
 #include <stdio.h>
+#include <string.h>
 
 int branchCommand(int argc, char *argv[]) {
         if (!dotCupotPath(cwdPath())) {
@@ -18,8 +20,14 @@ int branchCommand(int argc, char *argv[]) {
                 int branch_cnt = branches(all_brances);
 
                 printf("All branches: \n");
-                for (int i = 0; i < branch_cnt; i++)
-                        printf("\t%s\n", all_brances[i]);
+                char* cwb = getCWB();
+                for (int i = 0; i < branch_cnt; i++) {
+                        int x = (!strcmp(cwb, all_brances[i]));
+                        if (x) printf(CYAN), printf("*");
+                        printf("\t%s", all_brances[i]);
+                        if (x) printf(RESET);
+                        printf("\n");
+                }
        
                 return 0;
         }
@@ -45,7 +53,7 @@ int branchCommand(int argc, char *argv[]) {
         char commit_message[MAX_COMMIT_MESSAGE_LEN];
         snprintf(commit_message, MAX_COMMIT_MESSAGE_LEN, "Created branch <%s>", argv[0]);
         
-        CommitConfigs* configs = createCommitConfigs(getHead(), argv[0], commit_message, name, email);
+        CommitConfigs* configs = createCommitConfigs(getHead() -> id, argv[0], commit_message, name, email);
         emptyCommit(configs); 
         return 0;
 }
