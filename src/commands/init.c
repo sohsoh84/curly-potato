@@ -42,8 +42,8 @@ int initCommand(int argc, char *argv[]) {
         makeDirectory(mergePaths(".cupot/staging_area", projectName(cwdPath())));
         makeDirectory(".cupot/commits");
 
-        createInitCommit(name, email);
-        writeCWB(MASTER_BRANCH_NAME);
+        char* commit_id = createInitCommit(name, email);
+        writeCWC(commit_id);
         printf("cupot repository initialized successfully!\n");
         return 0;
 }

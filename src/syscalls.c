@@ -24,6 +24,7 @@ int removeFileDir(char* path) {
                         fprintf(stderr, "something went wrong while trying to remove directory %s\n", path);
                         return 1;
                 }
+
         }
 
         return 0;

@@ -1,6 +1,7 @@
 #include "dotcupot.h"
 #include "constants.h"
 #include "paths.h"
+#include "commits.h"
 #include "configs.h"
 #include <libgen.h>
 #include <string.h>
@@ -66,12 +67,19 @@ char *dotCupotConfigEntry(char *key) {
 
         return value;
 }
-
-char* getCWB() {
-        return tryReadConfigEntry("cwb", localConfigPath());
+char *getCWC() {
+        return tryReadConfigEntry("cwc", localConfigPath());
 }
 
-int writeCWB(char* branch_name) {
+char* commitMessageAliasPath(char* path) {
+        return mergePaths(dotCupotPath(path), COMMIT_MESSAGE_ALIAS);
+}
+
+char *getCWB() {
+        return getCommitConfigs(getCWC()) -> branch_name;
+}
+
+int writeCWC(char* commit_id) {
         Config* cupotConfig = createConfig();
         FILE* file = fopen(localConfigPath(), "r");
         if (file)
@@ -79,12 +87,8 @@ int writeCWB(char* branch_name) {
         fclose(file);
 
         file = fopen(localConfigPath(), "w");
-        editEntry(cupotConfig, "cwb", branch_name);
+        editEntry(cupotConfig, "cwc", commit_id);
         writeConfigFile(file, cupotConfig);
         fclose(file);
         return 0;
-}
-
-char* commitMessageAliasPath(char* path) {
-        return mergePaths(dotCupotPath(path), COMMIT_MESSAGE_ALIAS);
 }

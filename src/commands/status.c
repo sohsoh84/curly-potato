@@ -11,6 +11,16 @@
 #include <stdio.h>
 #include <dirent.h>
 #include <stdlib.h>
+#include <unistd.h>
+
+
+enum FILE_STATUS {
+        NOT_CHANGED,
+        ACCESS_CHANGED,
+        DELETED,
+        MODIFIED,
+        ADDED
+};
 
 char* latestVersionPath(const char* complete_path) {
         char real_path[MAX_PATH_LEN];
@@ -21,14 +31,6 @@ char* latestVersionPath(const char* complete_path) {
         char* proj_path = mergePaths(dotCupotPath(cwdPath()), TEMP_LATEST_VERSION);
         return mergePaths(proj_path, path);
 }
-
-enum FILE_STATUS {
-        NOT_CHANGED,
-        ACCESS_CHANGED,
-        DELETED,
-        MODIFIED,
-        ADDED
-};
 
 int status(char* path) {
                 char real_path[PATH_MAX];
@@ -110,16 +112,30 @@ int statusCommand(int argc, char *argv[]) {
                 return 1;
         }
 
-        char* starting_path = cwdPath();
         if (argc && !strcmp(argv[0], "--all")) {
-                starting_path = projectPath(cwdPath());
+                chroot(projectPath(cwdPath()));
         }
-
-        buildProjectFromCommit(mergePaths(dotCupotPath(cwdPath()), TEMP_LATEST_VERSION), getHead()->id);
+        
+        char* starting_path = cwdPath();
+        buildProjectFromCommit(mergePaths(dotCupotPath(cwdPath()), TEMP_LATEST_VERSION), getHead(getCWB())->id);
         char* lastest_version_path = mergePaths(mergePaths(dotCupotPath(cwdPath()), TEMP_LATEST_VERSION), 
                 projectName(cwdPath()));
 
         int _ = 0;
         printStatusOfFiles(starting_path); // TODO:
         return 0;
+}
+
+int checkIfUncommitedFiles() {
+        FILE *pipe = popen("cupot status", "r");
+        if (pipe == NULL) {
+                perror("popen");
+                return EXIT_FAILURE;
+        }
+
+        char buf[1024];
+        int n = fread(buf, 1, sizeof(buf), pipe);
+        pclose(pipe);
+
+        return n > 0;
 }

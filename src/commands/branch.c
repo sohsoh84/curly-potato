@@ -37,6 +37,11 @@ int branchCommand(int argc, char *argv[]) {
                 return 1;
         }
 
+        if (getHead(argv[0])) {
+                printf("there is already a branch called %s\n", argv[0]);
+                return 1;
+        }
+
         char* name = dotCupotConfigEntry("user.name");
         char* email = dotCupotConfigEntry("user.email");
 
@@ -53,7 +58,8 @@ int branchCommand(int argc, char *argv[]) {
         char commit_message[MAX_COMMIT_MESSAGE_LEN];
         snprintf(commit_message, MAX_COMMIT_MESSAGE_LEN, "Created branch <%s>", argv[0]);
         
-        CommitConfigs* configs = createCommitConfigs(getHead() -> id, argv[0], commit_message, name, email);
+        CommitConfigs* configs = createCommitConfigs(getHead(getCWB()) -> id, argv[0], commit_message, name, email);
         emptyCommit(configs); 
+        printf(GREEN "Created Branch <%s>\n" RESET, argv[0]);
         return 0;
 }

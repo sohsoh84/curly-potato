@@ -6,5 +6,5 @@
 int addFilesFromCommit(char* path, char* commit_id);
 int buildProjectFromCommit(char* path, char* commit_id);
 
-CommitConfigs* getHead();
+CommitConfigs* getHead(char* branch);
 #endif

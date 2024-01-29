@@ -3,4 +3,6 @@
 
 int statusCommand(int argc, char *argv[]);
 
+int checkIfUncommitedFiles();
+
 #endif

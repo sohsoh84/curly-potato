@@ -16,7 +16,8 @@ char* dotCupotConfigEntry(char* key);
 
 char* commitMessageAliasPath(char* path);
 
-char* getCWB(); // TODO: implement this shit
+char* getCWB();
+char* getCWC();
 
-int writeCWB(char* branch_name);
+int writeCWC(char* commit_id);
 #endif

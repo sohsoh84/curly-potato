@@ -9,3 +9,11 @@ check stagings using lstversion in git add -n
 LOG -since and -before with better time formats
 
 number of files commited(log), add the removed files to this
+
+cupot add .
+
+checking if there is no uncommited files in checkout dosnt work with deleted files
+
+check if checkout work somewhere other that root
+
+status --all dosnt work

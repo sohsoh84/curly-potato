@@ -15,6 +15,11 @@ int commitCommand(int argc, char *argv[]) {
                 return 1;
         }
 
+        if (strcmp(getHead(getCommitConfigs(getCWC()) -> branch_name) -> id, getCWC())) {
+                printf("you should be on your head commit to perform a commit command\n");
+                return 1;
+        }
+
         if (argc != 2) {
                 fprintf(stderr, "Wrong format: cupot commit -m \"message\"");
                 return 1;
@@ -66,12 +71,12 @@ int commitCommand(int argc, char *argv[]) {
                 return 1;
         }
 
-        CommitConfigs* config = createCommitConfigs(getHead() -> id, getHead()->branch_name, 
+        CommitConfigs* config = createCommitConfigs(getHead(getCWB()) -> id, getHead(getCWB())->branch_name, 
                 commit_message, name, email);
         commit(mergePaths(stagingAreaPath(cwdPath()), projectName(cwdPath())), config);
         clearStageingAreas();
         printf(GREEN "Commited successfully!\n" RESET "Commit id: %s\nCommit time: %s\n", config -> id, config -> time);
-
+        writeCWC(config->id);
         return 0;
 }
 

@@ -29,12 +29,11 @@ int buildProjectFromCommit(char* path, char* commit_id) {
         return addFilesFromCommit(path, commit_id);
 }
 
-CommitConfigs *getHead() {
-        char* cur_branch = getCWB();
+CommitConfigs *getHead(char* branch) {
         int cnt = getCommitCounts();
         CommitConfigs** all_commits = getAllCommitConfigs();
         for (int i = 0; i < cnt; i++)
-                if (!strcmp(cur_branch, all_commits[i]->branch_name))
+                if (!strcmp(branch, all_commits[i]->branch_name))
                         return all_commits[i];
 
         return NULL;
