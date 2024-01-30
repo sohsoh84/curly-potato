@@ -11,6 +11,7 @@
 #include "../staging_area.h"
 #include "../syscalls.h"
 #include "../constants.h"
+#include "../tracker.h"
 
 static int addToStageingArea(char* stage_path_, char* file_path_) {
         if (stage_path_ == NULL || stage_path_ == NULL) {
@@ -31,6 +32,8 @@ static int addToStageingArea(char* stage_path_, char* file_path_) {
                 fprintf(stderr, "%s is not in a cupot repository!!\n", file_path);
                 return 1;
         }
+
+        addRecursivlyToTrackedFile(stageTrackerPath(), file_path);
 
         char relative_path[PATH_MAX];
         releativePath(file_path, relative_path);
@@ -138,6 +141,14 @@ char* stagingStatusString(char* directoryName, int n, int lvl, int* total_unstag
         closedir(dir);
 }
 
+void stageRemove(char* path) {
+        char** tracked_files;
+        int count = allTrackedFiles(stageTrackerPath(), &tracked_files);
+        for (int i = 0; i < count; i++)
+                if (isSubdirectoryUnsafe(path, tracked_files[i]))
+                        removeTrackedFile(stageTrackerPath(), tracked_files[i]);
+}
+
 int addCommand(int argc, char *argv[]) {
         if (!dotCupotPath(cwdPath())) {
                 fprintf(stderr, "you are not in a cupot repository!!\n");
@@ -147,6 +158,16 @@ int addCommand(int argc, char *argv[]) {
         if (argc <= 0) {
                 fprintf(stderr, "too few arguments\n");
                 return 1;
+        }
+
+        if (!strcmp(argv[0], "-r")) {
+                if (argc == 1) {
+                        printf("too few arguments\n");
+                        return 1;
+                }
+
+                stageRemove(mergePaths(cwdPath(), argv[1]));
+                return 0;
         }
 
         if (!strcmp(argv[0], "-redo")) {

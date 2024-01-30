@@ -4,6 +4,7 @@
 #include "syscalls.h"
 #include "paths.h"
 #include "utils.h"
+#include "tracker.h"
 
 #include <dirent.h>
 #include <stdio.h>
@@ -43,6 +44,9 @@ int createBaseCommitFiles(CommitConfigs *configs) {
                 return 1;
         }
 
+        FILE* file = fopen(commitTrackerPath(configs->id), "w");
+        fclose(file);
+
         FILE* configFile = fopen(mergePaths(commit_path, COMMIT_CONF_FILE), "wb");
         if (configFile == NULL) {
                 fprintf(stderr, "unable to create config file %s\n", mergePaths(commit_path, COMMIT_CONF_FILE));
@@ -51,12 +55,18 @@ int createBaseCommitFiles(CommitConfigs *configs) {
 
         fwrite(configs, sizeof(CommitConfigs), 1, configFile);
         fclose(configFile);
+        
+        if (strlen(configs->parent_id))
+                copyDirWithName(commitTrackerPath(configs->parent_id), commitTrackerPath(configs->id));
         return 0;
 }
 
 int commit(char* path, CommitConfigs* configs) {
         char* commit_path = mergePaths(commitsAreaPath(cwdPath()), configs->id);
         if (createBaseCommitFiles(configs)) return 1;
+
+        removeFileDir(commitTrackerPath(configs->id));
+        copyDirWithName(stageTrackerPath(), commitTrackerPath(configs->id));
         return copyDirWithName(path, commit_path);
 }
 

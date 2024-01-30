@@ -4,6 +4,7 @@
 #include "../commits.h"
 #include "../configs.h"
 #include "../constants.h"
+#include "../tracker.h"
 #include <stdio.h>
 
 char* createInitCommit(char* name, char* email) {
@@ -41,6 +42,9 @@ int initCommand(int argc, char *argv[]) {
         makeDirectory(".cupot/staging_area");
         makeDirectory(mergePaths(".cupot/staging_area", projectName(cwdPath())));
         makeDirectory(".cupot/commits");
+
+        FILE* file = fopen(stageTrackerPath(), "w");
+        fclose(file);
 
         char* commit_id = createInitCommit(name, email);
         writeCWC(commit_id);

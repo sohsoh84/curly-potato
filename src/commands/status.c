@@ -5,6 +5,7 @@
 #include "../paths.h"
 #include "../staging_area.h"
 #include "../diff.h"
+#include "../tracker.h"
 
 #include <libgen.h>
 #include <string.h>
@@ -33,18 +34,18 @@ char* latestVersionPath(const char* complete_path) {
 }
 
 int status(char* path) {
-                char real_path[PATH_MAX];
-                realpath(path, real_path);
+        char real_path[PATH_MAX];
+        realpath(path, real_path);
 
-                char* latest_version_path = latestVersionPath(real_path);
-                char* stage_path = stageFilePath(real_path);       
+        char* latest_version_path = latestVersionPath(real_path);
+        char* stage_path = stageFilePath(real_path);       
 
-                if (fileExists(real_path)) {
-                        if (!fileExists(latest_version_path)) return ADDED;
-                        else if (absoluteDiff(latest_version_path, real_path)) return MODIFIED;
-                }
+        if (fileExists(real_path)) {
+                if (!fileExists(latest_version_path)) return ADDED;
+                else if (absoluteDiff(latest_version_path, real_path)) return MODIFIED;
+        }
 
-                return NOT_CHANGED;
+        return NOT_CHANGED;
 }
 
 int in_stage(char* path) {
@@ -106,6 +107,30 @@ void printStatusOfFiles(char* directoryName) {
         closedir(dir);
 }
 
+void printRemoveStatus(char* track_file, char* starting_path_) {
+        char starting_path[PATH_MAX];
+        realpath(starting_path_, starting_path);
+        char** all_tracked;
+        int count = allTrackedFiles(track_file, &all_tracked);
+        for (int i = 0; i < count; i++) {
+                if (!fileExists(all_tracked[i]) && isSubdirectoryUnsafe(starting_path, all_tracked[i])) {
+                        int in_stage_ = 1;
+                        if (isTracked(stageTrackerPath(), all_tracked[i]))
+                                in_stage_ = 0;
+
+                        printf("%d\n", isTracked(stageTrackerPath(), all_tracked[i]));
+                        printf((in_stage_ ? GREEN : RED));
+                        printf("%s: ", all_tracked[i] + strlen(starting_path) + 1);
+                        printf(RESET);
+
+                        printf(RED);
+                        printf((in_stage_ ? "+" : "-"));
+                        printf("D");
+                        printf(RESET "\n");
+                }
+        }
+}
+
 int statusCommand(int argc, char *argv[]) {
         if (!dotCupotPath(cwdPath())) {
                 fprintf(stderr, "you should be inside a cupot repository\n");
@@ -123,6 +148,7 @@ int statusCommand(int argc, char *argv[]) {
 
         int _ = 0;
         printStatusOfFiles(starting_path); // TODO:
+        printRemoveStatus(commitTrackerPath(getCWC()), starting_path);
         return 0;
 }
 

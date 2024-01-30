@@ -74,7 +74,7 @@ int commitCommand(int argc, char *argv[]) {
         CommitConfigs* config = createCommitConfigs(getHead(getCWB()) -> id, getHead(getCWB())->branch_name, 
                 commit_message, name, email);
         commit(mergePaths(stagingAreaPath(cwdPath()), projectName(cwdPath())), config);
-        clearStageingAreas();
+        clearStageingAreas(config -> id);
         printf(GREEN "Commited successfully!\n" RESET "Commit id: %s\nCommit time: %s\n", config -> id, config -> time);
         writeCWC(config->id);
         return 0;

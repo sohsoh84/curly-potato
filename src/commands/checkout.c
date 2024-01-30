@@ -7,6 +7,7 @@
 #include "../branch.h"
 #include "../constants.h"
 #include "../staging_area.h"
+#include "../tracker.h"
 
 #include <stdio.h>
 #include <dirent.h>
@@ -14,7 +15,11 @@
 #include <stdlib.h>
 #include <libgen.h>
 int checkout(char* commit_id) {
-        clearStageingAreas();
+        clearStageingAreas(commit_id);
+        if (fileExists(stageTrackerPath()))
+                removeFileDir(stageTrackerPath());
+        copyDirWithName(commitTrackerPath(commit_id), stageTrackerPath());
+
         chdir(projectPath(cwdPath()));
         buildProjectFromCommit(".tmp_project", commit_id);
 
@@ -86,16 +91,11 @@ int checkoutCommand(int argc, char *argv[]) {
                 return 1;
         }
 
-        if (argc != 1) {
-                fprintf(stderr, "checkout requires exactly one argument!\n");
-                return 1;
-        }
-
-
-        if (checkIfUncommitedFiles()) {
+        if (checkIfUncommitedFiles() && !(argc == 2 && !strcmp(argv[1], "--force"))) {
                 printf("you have uncommitted files\n");
                 return 1;
         }
+
 
         // TODO: check if checkout is performable(there is no uncommited changes)
 

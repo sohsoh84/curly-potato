@@ -12,8 +12,8 @@ number of files commited(log), add the removed files to this
 
 cupot add .
 
-checking if there is no uncommited files in checkout dosnt work with deleted files
-
-check if checkout work somewhere other that root
+checking if there is no uncommited files in checkout dosnt work with deleted files // probably done
 
 status --all dosnt work
+
+clear empty Directories

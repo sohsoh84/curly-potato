@@ -82,15 +82,21 @@ int isSubdirectory(const char *parPath, const char *childPath) {
         char realPath2[MAX_PATH_LEN];
 
         if (realpath(parPath, realPath1) == NULL) {
-                perror("Error resolving path1!");
+                // perror("Error resolving path1!");
                 return -1;
         }
 
         if (realpath(childPath, realPath2) == NULL) {
-                perror("Error resolving path2!");
+                // perror("Error resolving path2!");
                 return -1;
         }
 
+        int n = strlen(realPath1);
+        if (strlen(realPath1) > strlen(realPath2)) return 0;
+        return strncmp(realPath1, realPath2, n) == 0 && (realPath2[n] == '/' || realPath2[n] == '\0');
+}
+
+int isSubdirectoryUnsafe(const char* realPath1, const char* realPath2) {
         int n = strlen(realPath1);
         if (strlen(realPath1) > strlen(realPath2)) return 0;
         return strncmp(realPath1, realPath2, n) == 0 && (realPath2[n] == '/' || realPath2[n] == '\0');

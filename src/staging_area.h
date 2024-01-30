@@ -14,6 +14,6 @@ char* stageFilePath(char* file_path);
 
 int stagingStatus(char* path); // returns 0 if its in the staging area, 2 if its not, 1 if it is but it changed
 
-int clearStageingAreas();
+int clearStageingAreas(char* commit_id);
 
 #endif

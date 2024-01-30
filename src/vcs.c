@@ -3,6 +3,7 @@
 #include "paths.h"
 #include "dotcupot.h"
 #include "syscalls.h"
+#include "tracker.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -26,7 +27,11 @@ int buildProjectFromCommit(char* path, char* commit_id) {
                         return 1;
         
         makeDirectory(path);
-        return addFilesFromCommit(path, commit_id);
+        if (addFilesFromCommit(path, commit_id)) return 1;
+
+        char* base_path = mergePaths(path, projectName(cwdPath()));
+        return cleanWithTracker(base_path, commitTrackerPath(commit_id));
+        return 0;
 }
 
 CommitConfigs *getHead(char* branch) {

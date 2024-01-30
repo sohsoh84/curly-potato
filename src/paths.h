@@ -13,6 +13,8 @@ char* dirName(const char* path);
 int arePathsEqual(const char* path1, const char* path2);
 int isSubdirectory(const char* parPath, const char* childPath);
 
+int isSubdirectoryUnsafe(const char* patPath, const char* childPath);
+
 char* localConfigPath(); // TODO: memory management
 char* localAliasPath(); // TODO: memory management
 

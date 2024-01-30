@@ -4,6 +4,7 @@
 #include "constants.h"
 #include "diff.h"
 #include "dotcupot.h"
+#include "tracker.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -74,12 +75,14 @@ int stagingStatus(char *complete_path) {
         return 0;
 }
 
-int clearStageingAreas() {
+int clearStageingAreas(char* commit_id) {
         removeStage(STAGE_NAME);
         for (int i = 0; i < STAGING_AREA_BACKUP_SIZE; i++)
                 if (fileExists(mergePaths(dotCupotPath(cwdPath()), ith_backup_stage(i))))
                         removeStage(ith_backup_stage(i));
 
         makeDirectory(stagingAreaPath(cwdPath()));
+        makeDirectory(mergePaths(stagingAreaPath(cwdPath()), projectName(cwdPath())));
+        copyDirWithName(commitTrackerPath(commit_id), stageTrackerPath());
         return 0;
 }
