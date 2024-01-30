@@ -7,6 +7,7 @@ char* projectPath(char* path);
 
 char* stagingAreaPath(char* path);
 char* commitsAreaPath(char *path);
+char* tagsAreaPath(char* path);
 
 char* projectName(char* path);
 

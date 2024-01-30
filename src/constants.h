@@ -11,6 +11,7 @@ static char ALIAS_FILE_NAME[] = ".cupot_alias";
 static char STAGE_NAME[] = "staging_area";
 static char BACKUP_STAGE_NAME[] = ".staging_area";
 static char COMMITS_NAME[] = "commits";
+static char TAGS_NAME[] = "tags";
 static char COMMIT_CONF_FILE[] = "commit.conf";
 static char COMMIT_MESSAGE_ALIAS[] = "messages.alias";
 static char TEMP_LATEST_VERSION[] = "lstversion";
@@ -22,6 +23,7 @@ static char TRACK_FILE_NAME[] = "tracker";
 #define MAX_COMMIT_MESSAGE_LEN  1024
 #define MAX_BRANCHES            128
 #define MAX_FILE_COUNT          4096
+#define MAX_TAGS                128
 
 #define MAX(a,b)                (a) > (b) ? (a) : (b)
 

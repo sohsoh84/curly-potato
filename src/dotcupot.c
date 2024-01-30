@@ -35,6 +35,10 @@ char* commitsAreaPath(char *path) {
         return mergePaths(dotCupotPath(path), COMMITS_NAME);
 }
 
+char *tagsAreaPath(char *path) {
+        return mergePaths(dotCupotPath(path), TAGS_NAME);
+}
+
 char *projectName(char* path) {
         char* tmp = projectPath(path);
         if (!tmp) return NULL;

@@ -42,6 +42,7 @@ int initCommand(int argc, char *argv[]) {
         makeDirectory(".cupot/staging_area");
         makeDirectory(mergePaths(".cupot/staging_area", projectName(cwdPath())));
         makeDirectory(".cupot/commits");
+        makeDirectory(".cupot/tags");
 
         FILE* file = fopen(stageTrackerPath(), "w");
         fclose(file);
