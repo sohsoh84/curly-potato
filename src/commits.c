@@ -31,6 +31,7 @@ CommitConfigs *createCommitConfigs(char *parent_id, char* branch, char *message,
         strcpy(configs->time, ctime(&now));
         strcpy(configs->branch_name, branch);
 
+        configs->merge_id[0] = '\0';
         strcpy(configs->author_name, author_name);
         strcpy(configs->author_email, author_email);
         return configs;
@@ -79,10 +80,7 @@ int emptyCommit(CommitConfigs* configs) {
 CommitConfigs* getCommitConfigs(char* commit_id) {
         CommitConfigs* configs = (CommitConfigs*) malloc(sizeof(CommitConfigs));
         FILE *file = fopen(mergePaths(mergePaths(commitsAreaPath(cwdPath()), commit_id), COMMIT_CONF_FILE), "rb");
-        if (!file) {
-                printf("Couldn't open the commit\n");
-                return NULL;
-        }
+        if (!file) return NULL;
 
         fread(configs, sizeof(CommitConfigs), 1, file);
         return configs;

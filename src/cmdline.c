@@ -10,6 +10,7 @@
 #include "commands/log.h"
 #include "commands/branch.h"
 #include "commands/checkout.h"
+#include "commands/revert.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -28,6 +29,7 @@ int runCommand(int argc, char* argv[]) {
         else if (!strcmp(argv[1], "log")) command_func = logCommand;
         else if (!strcmp(argv[1], "branch")) command_func = branchCommand;
         else if (!strcmp(argv[1], "checkout")) command_func = checkoutCommand;
+        else if (!strcmp(argv[1], "revert")) command_func = revertCommand;
         else {
                 fprintf(stderr, "Invalid Command!\n");
                 return 1;

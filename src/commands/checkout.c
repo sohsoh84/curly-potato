@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <libgen.h>
-int checkout(char* commit_id) {
+int checkout(char* commit_id, int revert_state) {
         clearStageingAreas(commit_id);
         if (fileExists(stageTrackerPath()))
                 removeFileDir(stageTrackerPath());
@@ -76,7 +76,7 @@ int checkout(char* commit_id) {
         removeFileDir(".tmp_project");
         closedir(dir);
   
-        writeCWC(commit_id);
+        if (!revert_state) writeCWC(commit_id);
         return 0;
 }
 
@@ -104,7 +104,7 @@ int checkoutCommand(int argc, char *argv[]) {
 
         for (int i = 0; i < branch_cnt; i++) {
                 if (!strcmp(all_brances[i], argv[0])) {
-                        return checkout(getHead(all_brances[i])->id);
+                        return checkout(getHead(all_brances[i])->id, 0);
                 }
         }
 
@@ -112,12 +112,12 @@ int checkoutCommand(int argc, char *argv[]) {
         char** commit_ids = getAllCommitIDs();
         for (int i = 0; i < commit_cnt; i++) {
                 if (!strcmp(commit_ids[i], argv[0])) {
-                        return checkout(commit_ids[i]);
+                        return checkout(commit_ids[i], 0);
                 }
         }
 
         if (!strcmp(argv[0], "HEAD")) {
-                return checkout(getHead(getCWB())->id);
+                return checkout(getHead(getCWB())->id, 0);
         }
 
         if (!strncmp(argv[0], "HEAD-", 5)) {
@@ -134,7 +134,7 @@ int checkoutCommand(int argc, char *argv[]) {
                         config = getCommitConfigs(config->parent_id);
                 }
 
-                return checkout(config->id);
+                return checkout(config->id, 0);
         }
 
         fprintf(stderr, "Invalid commit/branch/arguments: %s\n", argv[0]);

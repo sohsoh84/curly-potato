@@ -3,6 +3,8 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <libgen.h>
+#include <dirent.h>
 
 void strip(char* s) {
         while (strlen(s) && (s[strlen(s) - 1] == ' ' || s[strlen(s) - 1] == '\n'))
@@ -36,4 +38,33 @@ int compareTimes(char* time_str1, char* time_str2) { // returns time_str1 < time
         if (s1 != s2) return s1 < s2;
 
         return 0;
+}
+
+int removeEmptyDirs(char *dirPath) {
+        DIR *dir = opendir(dirPath);
+        if (dir == NULL) {
+                printf("Error: Cannot open directory\n");
+                return 0;
+        }
+
+        struct dirent *ent;
+
+        int result = 0;
+
+        while ((ent = readdir(dir)) != NULL) {
+                if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0) {
+                        continue;
+                }
+
+                char filePath[MAX_PATH_LEN];
+                snprintf(filePath, sizeof(filePath), "%s/%s", dirPath, ent -> d_name);
+                if (!strcmp(basename(filePath), ".cupot")) continue;
+                
+                if (ent -> d_type == DT_DIR) {
+                        result += removeEmptyDirs(filePath);
+                } else if (ent -> d_type == DT_REG) result++;
+        }
+
+        closedir(dir);
+        return result;
 }

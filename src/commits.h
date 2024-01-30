@@ -5,6 +5,7 @@
 
 struct CommitConfigs {
         char id[COMMIT_ID_LEN + 1];
+        char merge_id[COMMIT_ID_LEN + 1];
         char branch_name[MAX_CONFIG_LENGHT];
         char author_name[MAX_CONFIG_LENGHT];
         char author_email[MAX_CONFIG_LENGHT];

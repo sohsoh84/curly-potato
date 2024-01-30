@@ -4,6 +4,7 @@
 #include "dotcupot.h"
 #include "syscalls.h"
 #include "tracker.h"
+#include "utils.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -22,16 +23,17 @@ int addFilesFromCommit(char *path, char *commit_id) {
 }
 
 int buildProjectFromCommit(char* path, char* commit_id) {
-        if (fileExists(path))
-                if (removeFileDir(path))
+        if (fileExists(mergePaths(path, projectName(cwdPath()))))
+                if (removeFileDir(mergePaths(path, projectName(cwdPath()))))
                         return 1;
         
         makeDirectory(path);
         if (addFilesFromCommit(path, commit_id)) return 1;
 
         char* base_path = mergePaths(path, projectName(cwdPath()));
-        return cleanWithTracker(base_path, commitTrackerPath(commit_id));
-        return 0;
+        if (cleanWithTracker(base_path, commitTrackerPath(commit_id))) return 1;
+        return removeEmptyDirs(base_path);
+
 }
 
 CommitConfigs *getHead(char* branch) {

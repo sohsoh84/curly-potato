@@ -17,3 +17,7 @@ checking if there is no uncommited files in checkout dosnt work with deleted fil
 status --all dosnt work
 
 clear empty Directories
+
+git status with T
+
+implement hard revert
