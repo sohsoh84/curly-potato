@@ -1,9 +1,12 @@
 #include "utils.h"
 #include "constants.h"
+#include "paths.h"
+#include "dotcupot.h"
 
 #include <string.h>
 #include <stdio.h>
 #include <libgen.h>
+#include <stdlib.h>
 #include <dirent.h>
 
 void strip(char* s) {
@@ -67,4 +70,31 @@ int removeEmptyDirs(char *dirPath) {
 
         closedir(dir);
         return result;
+}
+
+
+char* latestVersionPath(const char* complete_path) {
+        char real_path[MAX_PATH_LEN];
+        realpath(complete_path, real_path);
+
+        char path[MAX_PATH_LEN];
+        releativePath(real_path, path);
+        char* proj_path = mergePaths(dotCupotPath(cwdPath()), TEMP_LATEST_VERSION);
+        return mergePaths(proj_path, path);
+}
+
+int match_wc(char *pattern, char *candidate, int p, int c) {
+        if (pattern[p] == '\0') {
+                return candidate[c] == '\0';
+        } else if (pattern[p] == '*') {
+        for (; candidate[c] != '\0'; c++) {
+                if (match_wc(pattern, candidate, p+1, c))
+                        return 1;
+        }
+                return match_wc(pattern, candidate, p+1, c);
+        } else if (pattern[p] != '?' && pattern[p] != candidate[c]) {
+                return 0;
+        }  else {
+                 return match_wc(pattern, candidate, p+1, c+1);
+        }
 }

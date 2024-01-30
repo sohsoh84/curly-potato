@@ -20,4 +20,8 @@ clear empty Directories
 
 git status with T
 
-implement hard revert
+duplicated code latestversionpath
+
+regex match in log function is fucked up also, copy it from grep
+
+empty staging area dosnt work anymore

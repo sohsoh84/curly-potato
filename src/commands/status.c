@@ -6,6 +6,7 @@
 #include "../staging_area.h"
 #include "../diff.h"
 #include "../tracker.h"
+#include "../utils.h"
 
 #include <libgen.h>
 #include <string.h>
@@ -22,16 +23,6 @@ enum FILE_STATUS {
         MODIFIED,
         ADDED
 };
-
-char* latestVersionPath(const char* complete_path) {
-        char real_path[MAX_PATH_LEN];
-        realpath(complete_path, real_path);
-
-        char path[MAX_PATH_LEN];
-        releativePath(real_path, path);
-        char* proj_path = mergePaths(dotCupotPath(cwdPath()), TEMP_LATEST_VERSION);
-        return mergePaths(proj_path, path);
-}
 
 int status(char* path) {
         char real_path[PATH_MAX];

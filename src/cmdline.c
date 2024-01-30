@@ -12,6 +12,7 @@
 #include "commands/checkout.h"
 #include "commands/revert.h"
 #include "commands/tag.h"
+#include "commands/grep.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -32,6 +33,7 @@ int runCommand(int argc, char* argv[]) {
         else if (!strcmp(argv[1], "checkout")) command_func = checkoutCommand;
         else if (!strcmp(argv[1], "revert")) command_func = revertCommand;
         else if (!strcmp(argv[1], "tag")) command_func = tagCommand;
+        else if (!strcmp(argv[1], "grep")) command_func = grepCommand;
         else {
                 fprintf(stderr, "Invalid Command!\n");
                 return 1;
