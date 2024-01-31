@@ -36,6 +36,20 @@ int buildProjectFromCommit(char* path, char* commit_id) {
 
 }
 
+int buildFromMerge(char* tracker_path, char* path, char* commit_id1, char* commit_id2) {
+        if (fileExists(mergePaths(path, projectName(cwdPath()))))
+                if (removeFileDir(mergePaths(path, projectName(cwdPath()))))
+                        return 1;
+
+        makeDirectory(path);
+        if (addFilesFromCommit(path, commit_id1)) return 1;
+        if (addFilesFromCommit(path, commit_id2)) return 1;
+
+        char* base_path = mergePaths(path, projectName(cwdPath()));
+        if (cleanWithTracker(base_path, tracker_path)) return 1;
+        return removeEmptyDirs(base_path);
+}
+
 CommitConfigs *getHead(char* branch) {
         int cnt = getCommitCounts();
         CommitConfigs** all_commits = getAllCommitConfigs();

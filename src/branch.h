@@ -4,5 +4,6 @@
 #include "constants.h"
 
 int branches(char* dest[MAX_BRANCHES]);
+int branchExists(char* branch_name);
 
 #endif

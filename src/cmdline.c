@@ -14,6 +14,7 @@
 #include "commands/tag.h"
 #include "commands/grep.h"
 #include "commands/diff.h"
+#include "commands/merge.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -36,6 +37,7 @@ int runCommand(int argc, char* argv[]) {
         else if (!strcmp(argv[1], "tag")) command_func = tagCommand;
         else if (!strcmp(argv[1], "grep")) command_func = grepCommand;
         else if (!strcmp(argv[1], "diff")) command_func = diffCommand;
+        else if (!strcmp(argv[1], "merge")) command_func = mergeCommand;
         else {
                 fprintf(stderr, "Invalid Command!\n");
                 return 1;

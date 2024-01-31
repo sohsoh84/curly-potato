@@ -109,7 +109,6 @@ void printRemoveStatus(char* track_file, char* starting_path_) {
                         if (isTracked(stageTrackerPath(), all_tracked[i]))
                                 in_stage_ = 0;
 
-                        printf("%d\n", isTracked(stageTrackerPath(), all_tracked[i]));
                         printf((in_stage_ ? GREEN : RED));
                         printf("%s: ", all_tracked[i] + strlen(starting_path) + 1);
                         printf(RESET);

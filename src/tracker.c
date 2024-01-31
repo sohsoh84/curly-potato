@@ -23,7 +23,10 @@ int cleanRecursivly(char* base_path, char* path, char* track_file) {
                 suffixPath(tmp_path, path, base_path);
                 
                 char* proj_path = mergePaths(projectPath(cwdPath()), tmp_path);
-                if (!isTracked(track_file, proj_path)) return removeFileDir(path);
+                if (!isTracked(track_file, proj_path)) {
+                        return removeFileDir(path);
+                }
+
                 return 0;
         }
 
@@ -74,6 +77,7 @@ int addTrackedFile(char *track_file, char *path_)
         }
 
         fprintf(fp, "%s\n", path);
+        fclose(fp);
         return 0;
 }
 
@@ -125,9 +129,11 @@ int isTracked(char *trackFile, char *path_) {
         char path[MAX_PATH_LEN];
         if (realpath(path_, path) == NULL) strcpy(path, path_);
 
+
         char line[MAX_PATH_LEN];
         while (fgets(line, MAX_PATH_LEN, file) != NULL) {
                 strip(line);
+
                 if (!strcmp(line, path)) {
                         fclose(file);
                         return 1;

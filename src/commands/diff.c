@@ -12,19 +12,19 @@
 #include <string.h>
 #include <stdlib.h>
 
-void printLine(FILE* stream, char* file_name, char* line, int lc, const char* COL) {
+void printLine(FILE* stream, char* file_name, char* line, int lc, const char* COL, int file_name_ignore) {
         fprintf(stream, "%s", COL);
-        fprintf(stream, "%s-%d\n", file_name, (line ? lc : 0));
+        fprintf(stream, "%s-%d\n", file_name + file_name_ignore, (line ? lc : 0));
         fprintf(stream, "%s\n", (line ? line : "EOF"));
         fprintf(stream, RESET);
 }
 
-int commitDiff(FILE* stream, char* commit_id1, char* commit_id2) {
+int commitDiff(int ignore_unmatch_files, FILE* stream, char* commit_id1, char* commit_id2) {
         if (!dotCupotPath(cwdPath())) {
                 printf("you should be inside a cupot repository\n");
                 return 1;
         }
-        
+
         if (!getCommitConfigs(commit_id1)) {
                 printf("Invalid commit 1\n");
                 return 0;
@@ -42,13 +42,15 @@ int commitDiff(FILE* stream, char* commit_id1, char* commit_id2) {
 
         for (int i = 0; i < count1; i++) {
                 if (!isTracked(track2, all_tracked1[i])) {
-                        fprintf(stream, YELLOW "%s exists in first commit but not in second one\n" RESET, all_tracked1[i]);
+                        if (!ignore_unmatch_files) 
+                                fprintf(stream, YELLOW "%s exists in first commit but not in second one\n" RESET, all_tracked1[i]);
                 }
         }
 
         for (int i = 0; i < count2; i++) {
                 if (!isTracked(track1, all_tracked2[i])) {
-                        fprintf(stream, YELLOW "%s exists in second commit but not in first one\n" RESET, all_tracked2[i]);
+                        if (!ignore_unmatch_files)
+                                fprintf(stream, YELLOW "%s exists in second commit but not in first one\n" RESET, all_tracked2[i]);
                 }
         }
 
@@ -62,14 +64,14 @@ int commitDiff(FILE* stream, char* commit_id1, char* commit_id2) {
                 if (isTracked(track2, all_tracked1[i])) {
                         char* path1 = mergePaths(mergePaths(proj_path1, projectName(cwdPath())), trackRelativePath(all_tracked1[i]));
                         char* path2 = mergePaths(mergePaths(proj_path2, projectName(cwdPath())), trackRelativePath(all_tracked1[i]));
-                        result += fileDiff(stream, path1, path2, 1, lineCounts(path1), 1, lineCounts(path2));                        
+                        result += fileDiff(stream, path1, path2, 1, lineCounts(path1), 1, lineCounts(path2), strlen(proj_path1) + 1);                        
                 }
         }
 
         return result;
 }
 
-int fileDiff(FILE* stream, char* path1, char* path2, int s1, int e1, int s2, int e2) {
+int fileDiff(FILE* stream, char* path1, char* path2, int s1, int e1, int s2, int e2, int file_name_ignore) {
         FILE* f1 = fopen(path1, "r");
         FILE* f2 = fopen(path2, "r");
 
@@ -98,8 +100,8 @@ int fileDiff(FILE* stream, char* path1, char* path2, int s1, int e1, int s2, int
                 if (l1 == NULL || l2 == NULL || strcmp(l1, l2)) {
                         result++;
                         fprintf(stream, "«««««\n");
-                        printLine(stream, path1, l1, p1, GREEN);
-                        printLine(stream, path2, l2, p2, RED);
+                        printLine(stream, path1, l1, p1, GREEN, file_name_ignore);
+                        printLine(stream, path2, l2, p2, RED, file_name_ignore);
                         fprintf(stream, "»»»»»\n");
                 }
 
@@ -118,7 +120,7 @@ int diffCommand(int argc, char* argv[]) {
         }
 
         if (!strcmp(argv[0], "-c")) {
-                commitDiff(stdout, argv[1], argv[2]);
+                commitDiff(0, stdout, argv[1], argv[2]);
                 return 1;
         }
 
@@ -195,7 +197,7 @@ int diffCommand(int argc, char* argv[]) {
                 return 1;
         }
 
-        if (!fileDiff(stdout, path1, path2, start1, end1, start2, end2)) {
+        if (!fileDiff(stdout, path1, path2, start1, end1, start2, end2, 0)) {
                 fprintf(stderr, "No Diff found for file :)\n");
         }
         return 0;
