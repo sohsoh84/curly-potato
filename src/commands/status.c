@@ -28,7 +28,7 @@ int status(char* path) {
         char real_path[PATH_MAX];
         realpath(path, real_path);
 
-        char* latest_version_path = latestVersionPath(real_path);
+        char* latest_version_path = latestVersionPath(real_path, TEMP_LATEST_VERSION);
         char* stage_path = stageFilePath(real_path);       
 
         if (fileExists(real_path)) {
@@ -43,7 +43,7 @@ int in_stage(char* path) {
         char real_path[PATH_MAX];
         realpath(path, real_path);
 
-        char* latest_version_path = latestVersionPath(real_path);
+        char* latest_version_path = latestVersionPath(real_path, TEMP_LATEST_VERSION);
         char* stage_path = stageFilePath(real_path);       
 
         if (fileExists(latest_version_path) && !absoluteDiff(real_path, latest_version_path)) return 1;
@@ -77,7 +77,7 @@ void printStatusOfFiles(char* directoryName) {
                         char real_path[PATH_MAX];
                         realpath(filePath, real_path);
 
-                        char* latest_version_path = latestVersionPath(real_path);
+                        char* latest_version_path = latestVersionPath(real_path, TEMP_LATEST_VERSION);
                         char rel_path[PATH_MAX];
                         releativePath(real_path, rel_path);
                         char* stage_path = stageFilePath(real_path);

@@ -99,7 +99,7 @@ int grepCommand(int argc, char* argv[]) {
 
         if (commit_id != NULL) {
                 buildProjectFromCommit(mergePaths(dotCupotPath(cwdPath()), TEMP_LATEST_VERSION), commit_id);
-                file_path = latestVersionPath(file_path);
+                file_path = latestVersionPath(file_path, TEMP_LATEST_VERSION);
         }
 
         FILE* fp = fopen(file_path, "r");

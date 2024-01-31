@@ -146,6 +146,11 @@ char *stageTrackerPath() {
         return mergePaths(stagingAreaPath(cwdPath()), TRACK_FILE_NAME);
 }
 
+char* trackRelativePath(char* path) {
+        char* new_path = strdup(path);
+        return new_path + strlen(projectPath(cwdPath())) + 1;
+}
+
 int allTrackedFiles(char* track_path, char ***result) {
         int count = 0;
         (*result) = (char**) malloc(sizeof(char*) * MAX_FILE_COUNT);

@@ -14,5 +14,7 @@ char* stageTrackerPath();
 
 int allTrackedFiles(char* track_path, char*** result);
 
+char* trackRelativePath(char* path);
+
 int addRecursivlyToTrackedFile(char* track_path, char* path);
 #endif

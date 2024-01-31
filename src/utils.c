@@ -73,14 +73,21 @@ int removeEmptyDirs(char *dirPath) {
 }
 
 
-char* latestVersionPath(const char* complete_path) {
+char* latestVersionPath(const char* complete_path, const char* VERSION_NAME) {
         char real_path[MAX_PATH_LEN];
         realpath(complete_path, real_path);
 
         char path[MAX_PATH_LEN];
         releativePath(real_path, path);
-        char* proj_path = mergePaths(dotCupotPath(cwdPath()), TEMP_LATEST_VERSION);
+        char* proj_path = mergePaths(dotCupotPath(cwdPath()), VERSION_NAME);
         return mergePaths(proj_path, path);
+}
+
+void readDummyLines(FILE* file, int k) {
+        while (k--) {
+                char _[4096];
+                fgets(_, sizeof(_), file);
+        }
 }
 
 int match_wc(char *pattern, char *candidate, int p, int c) {
@@ -97,4 +104,9 @@ int match_wc(char *pattern, char *candidate, int p, int c) {
         }  else {
                  return match_wc(pattern, candidate, p+1, c+1);
         }
+}
+
+FILE* devnull() {
+        FILE* result = fopen("/dev/null", "a");
+        return result;
 }

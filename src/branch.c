@@ -11,7 +11,7 @@ int branches(char* dest[MAX_BRANCHES]) {
         int result = 0;
         for (int i = 0; i < configs_cnt; i++) {
                 int exists = 0;
-                for (int j = 0; j < result; j++)
+                for (int j = 0; j < i; j++)
                         if (!strcmp(allConfigs[i]->branch_name, allConfigs[j]->branch_name))
                                 exists = 1;
                 
