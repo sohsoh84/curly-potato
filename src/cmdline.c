@@ -15,6 +15,7 @@
 #include "commands/grep.h"
 #include "commands/diff.h"
 #include "commands/merge.h"
+#include "commands/precommit.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -38,6 +39,7 @@ int runCommand(int argc, char* argv[]) {
         else if (!strcmp(argv[1], "grep")) command_func = grepCommand;
         else if (!strcmp(argv[1], "diff")) command_func = diffCommand;
         else if (!strcmp(argv[1], "merge")) command_func = mergeCommand;
+        else if (!strcmp(argv[1], "pre-commit")) command_func = precommitCommand;
         else {
                 fprintf(stderr, "Invalid Command!\n");
                 return 1;

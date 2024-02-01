@@ -1,11 +1,14 @@
 #include "commit.h"
+#include "precommit.h"
 #include "../dotcupot.h"
 #include "../commits.h"
 #include "../paths.h"
 #include "../staging_area.h"
 #include "../configs.h"
 #include "../vcs.h"
+#include "../hook.h"
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -69,6 +72,23 @@ int commitCommand(int argc, char *argv[]) {
         if (strlen(commit_message) > 72) {
                 fprintf(stderr, "commit message is too long\n");
                 return 1;
+        }
+
+        if (hookCount()) {
+                printf("Checking for hooks...\n");
+                if (!checkHooks()) {
+                        printf(RED "You have failed hooks in your staging area\n" RESET "Do you want to commit anyway? [y: yes, s: show, n(DEFAULT) no]?\n");
+                        char c;
+                        scanf("%c", &c);
+                        if (c == 's') {
+                                system("cupot pre-commit");
+                                return 1;
+                        } if (c != 'y') {
+                                return 1;
+                        }
+                } else {
+                        printf(GREEN "All hooks are passed successfully\n" RESET);
+                }
         }
 
         CommitConfigs* config = createCommitConfigs(getHead(getCWB()) -> id, getHead(getCWB())->branch_name, 

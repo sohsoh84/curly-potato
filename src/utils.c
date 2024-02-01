@@ -90,6 +90,17 @@ void readDummyLines(FILE* file, int k) {
         }
 }
 
+int checkSubstringInFile(FILE *file, char *substring) {
+        char line[4096];
+        while (fgets(line, sizeof(line), file) != NULL) {
+                if (strstr(line, substring)) {
+                        return 1;
+                }
+        }
+
+        return 0;
+}
+
 int match_wc(char *pattern, char *candidate, int p, int c) {
         if (pattern[p] == '\0') {
                 return candidate[c] == '\0';

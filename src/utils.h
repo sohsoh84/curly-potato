@@ -14,6 +14,8 @@ int match_wc(char *pattern, char *candidate, int p, int c);
 
 void readDummyLines(FILE* file, int k);
 
+int checkSubstringInFile(FILE* file, char* substring);
+
 FILE* devnull();
 
 #endif

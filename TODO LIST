@@ -1,6 +1,6 @@
 remove all staging area backups after commit? (should you?)
 git add --redo
-alias
+##################### alias
 
 backup and undo backups in reset for redo
 check if the git add fucking works with deleted files and if not, what the fuck you should do, it fucking dosnt work with status
