@@ -12,4 +12,6 @@ HOOK_RESULT file_size_check(char* path);
 
 HOOK_RESULT todo_check(char* path);
 
+HOOK_RESULT static_error_check(char *path);
+
 #endif

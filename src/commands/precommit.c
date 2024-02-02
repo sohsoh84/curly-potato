@@ -11,9 +11,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define hook_cnt        5
-char hook_names[hook_cnt][50] = {"balance-braces", "eof-blank-space", "character-limit", "file-size-check", "todo-check"};
-HOOK_RESULT (*hook_funcs[hook_cnt]) (char*) = {balance_braces, eof_blank_space, character_limit, file_size_check, todo_check};
+#define hook_cnt        6
+char hook_names[hook_cnt][50] = {"balance-braces", "eof-blank-space", "character-limit", "file-size-check", "todo-check", "static-error-check"};
+HOOK_RESULT (*hook_funcs[hook_cnt]) (char*) = {balance_braces, eof_blank_space, character_limit, file_size_check, todo_check, static_error_check};
 
 int validHook(char* hook) {
         for (int i = 0; i < hook_cnt; i++)

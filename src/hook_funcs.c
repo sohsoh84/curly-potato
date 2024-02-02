@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <sys/stat.h>
+#include "paths.h"
+#include "syscalls.h"
+#include "libgen.h"
 
 const int CHAR_LIM = 20000;
 const int FILE_SIZE_LIMIT = 5 * 1024 * 1024;
@@ -113,5 +116,36 @@ HOOK_RESULT todo_check(char *path) {
         FILE* fp = fopen(path, "r");
         if (checkSubstringInFile(fp, "TODO")) return HOOK_FAILED;
         fclose(fp);
+        return HOOK_PASSED;
+}
+
+void remove_doto(char* path_) {
+        char* path = strdup(path_);
+        char* name = basename(path);
+        int lst_dot = strrchr(name, '.') - name;
+        name[lst_dot + 1] = 'o';
+        name[lst_dot + 2] = '\0';
+
+        if (fileExists(name))
+                removeFileDir(name);
+}
+
+HOOK_RESULT static_error_check(char *path) {
+        if (!checkExtension(path, 2, "cpp", "c")) return HOOK_SKIPPED;
+        char command[4096];
+        sprintf(command, "%s -w -c %s 2>tmp_res_file > /dev/null", checkExtension(path, 1, "cpp") ? "g++" : "gcc", path);
+        system(command);
+        if (!fileExists("tmp_res_file")) return HOOK_PASSED;
+        FILE* fp = fopen("tmp_res_file", "r");
+        if (checkSubstringInFile(fp, "error")) {
+                fclose(fp);
+                removeFileDir("tmp_res_file");
+                remove_doto(path);
+                return HOOK_FAILED;
+        }
+
+        fclose(fp);
+        removeFileDir("tmp_res_file");
+        remove_doto(path);
         return HOOK_PASSED;
 }

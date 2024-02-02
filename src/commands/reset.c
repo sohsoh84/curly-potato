@@ -2,11 +2,13 @@
 #include "../syscalls.h"
 #include "../staging_area.h"
 #include "../paths.h"
+#include "../commits.h"
+#include "../tracker.h"
+#include "../dotcupot.h"
 #include <glob.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "commit.h"
 
 static int reset(char* file_path) {
         glob_t globbuf;
@@ -30,6 +32,14 @@ static int reset(char* file_path) {
                         result++;
                         fprintf(stderr, "%s unstaged successfully!\n", globbuf.gl_pathv[i]);
                 }
+
+                char** all_tracked;
+                int count = allTrackedFiles(stageTrackerPath(), &all_tracked);
+                for (int j = 0; j < count; j++) {
+                        if (!isTracked(commitTrackerPath(getCWC()), all_tracked[j]) && isSubdirectory(globbuf.gl_pathv[i], all_tracked[j])) {
+                                removeTrackedFile(stageTrackerPath(), all_tracked[j]);
+                        }
+                }
         }       
 
         globfree(&globbuf);
@@ -37,6 +47,11 @@ static int reset(char* file_path) {
 }
 
 int resetCommand(int argc, char *argv[]) {
+        if (!dotCupotPath(cwdPath())) {
+                printf("you should be inside a cupot repository to run this command\n");
+                return 1;
+        }
+
         int unstaged_successfully = 0;
         if (argc <= 0) {
                 fprintf(stderr, "too few arguments\n");
