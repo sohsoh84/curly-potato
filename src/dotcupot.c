@@ -55,7 +55,7 @@ void releativePath(char *path, char* destination) {
         suffixPath(destination, file_path, dirName(projectPath(file_path)));
 }
 
-static char* tryReadConfigEntry(char* key, char* path) {
+char* tryReadConfigEntry(char* key, char* path) {
         if (!fileExists(path)) return NULL;
         Config* config = createConfig();
         FILE* f = fopen(path, "r");

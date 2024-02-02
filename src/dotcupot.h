@@ -22,5 +22,7 @@ char* commitMessageAliasPath(char* path);
 char* getCWB();
 char* getCWC();
 
+char* tryReadConfigEntry(char* key, char* path);
+
 int writeCWC(char* commit_id);
 #endif

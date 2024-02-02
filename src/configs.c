@@ -72,9 +72,15 @@ int readConfigFile(FILE *file, struct Config *config) {
         }
 
         char tmpKey[MAX_CONFIG_LENGHT], tmpValue[MAX_CONFIG_LENGHT];
-        while (fscanf(file, " %[^=]=%s", tmpKey, tmpValue) == 2)
+        char line[MAX_CONFIG_LENGHT * 2];
+        while (fgets(line, MAX_CONFIG_LENGHT, file)) {
+                int ind = strchr(line, '=') - line;
+                strcpy(tmpKey, line);
+                tmpKey[ind] = '\0';
+                strcpy(tmpValue, line + ind + 1);
                 if (addEntry(config, tmpKey, tmpValue))
                         return 1;
+        }
 
         return 0;
 }

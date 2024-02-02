@@ -18,8 +18,37 @@
 #include "commands/precommit.h"
 #include "commands/stash.h"
 #include "commands/tree.h"
+#include "dotcupot.h"
+#include "paths.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
+
+int alias(char* alias_name, int argc, char* argv[]) {
+        char* result = tryReadConfigEntry(alias_name, globalAliasPath());
+        char* tmp = tryReadConfigEntry(alias_name, localAliasPath());
+        if (tmp != NULL) result = tmp;
+
+        if (result == NULL) {
+                fprintf(stderr, "Alias '%s' not found\n", alias_name);
+                return 1;
+        }
+
+        char** new_argv = (char**) malloc(sizeof(char*) * 32);
+        new_argv[0] = argv[0];
+        int new_argc = 1;
+        
+        char* tok = strtok(result, " \t\n");
+        while (tok) {
+                new_argv[new_argc++] = strdup(tok);
+                tok = strtok(NULL, " \t\n");
+        }
+
+        for (int i = 2; i < argc; i++)
+                new_argv[new_argc++] = strdup(argv[i]);
+        
+        return runCommand(new_argc, new_argv);
+}
 
 int runCommand(int argc, char* argv[]) {
         int (*command_func) (int, char*[]) = NULL;
@@ -44,7 +73,9 @@ int runCommand(int argc, char* argv[]) {
         else if (!strcmp(argv[1], "pre-commit")) command_func = precommitCommand;
         else if (!strcmp(argv[1], "stash")) command_func = stashCommand;
         else if (!strcmp(argv[1], "tree")) command_func = treeCommand;
-        else {
+        else if (!strncmp(argv[1], "alias.", 6)) {
+                return alias(argv[1], argc, argv);
+        } else {
                 fprintf(stderr, "Invalid Command!\n");
                 return 1;
         }
