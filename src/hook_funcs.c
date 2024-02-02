@@ -153,3 +153,10 @@ HOOK_RESULT static_error_check(char *path) {
         remove_doto(path);
         return HOOK_PASSED;
 }
+
+HOOK_RESULT time_limit(char* path) {
+        if (!checkExtension(path, 3, "wav", "mp4", "mp3")) return HOOK_SKIPPED;
+        int duration = getVideoDuration(path);
+        if (duration > 10 * 60) return HOOK_FAILED;
+        return HOOK_PASSED;
+}
