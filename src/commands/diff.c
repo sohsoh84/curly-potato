@@ -125,6 +125,49 @@ int stashDiff(int ignore_unmatch_files, FILE* stream, int stash_id) {
         return result;
 }
 
+int lineDiff(char* line1_, char* line2_, int* s1, int* s2, int* len1, int* len2) {
+        if (line1_ == NULL || line2_ == NULL) return 0;
+        char* line1 = strdup(line1_);
+        char* line2 = strdup(line2_);
+
+        char* save_ptr1, *save_ptr2;
+        char* p1 = strtok_r(line1, " \t\n", &save_ptr1);
+        char* p2 = strtok_r(line2, " \t\n", &save_ptr2);
+
+        int found = 0;
+        while (p1 != NULL || p2 != NULL) {
+                if (p1 == NULL || p2 == NULL) return 0;
+                if (strcmp(p1, p2)) {
+                        if (found) return 0;
+                        found = 1;
+                        
+                        *s1 = p1 - line1;
+                        *s2 = p2 - line2;
+                }
+
+                p1 = strtok_r(NULL, " \t\n", &save_ptr1);
+                p2 = strtok_r(NULL, " \t\n", &save_ptr2);
+
+        }
+
+        if (found) {
+                *len1 = strlen(*s1 + line1);
+                *len2 = strlen(*s2 + line2);
+        }
+        return found;
+}
+
+void printLine2(FILE* stream, char* file_name, char* line, int lc, const char* COL, int file_name_ignore, int s, int len) {
+        fprintf(stream, "%s", COL);
+        fprintf(stream, "%s-%d\n", file_name + file_name_ignore, (line ? lc : 0));
+        fprintf(stream, "%.*s", s, line);
+        fprintf(stream, CYAN ">>");
+        fprintf(stream, "%.*s", len, line + s);
+        fprintf(stream, "<<%s", COL);
+        fprintf(stream, "%s\n", line + s + len);
+        fprintf(stream, RESET);
+}
+
 int fileDiff(FILE* stream, char* path1, char* path2, int s1, int e1, int s2, int e2, int file_name_ignore) {
         FILE* f1 = fopen(path1, "r");
         FILE* f2 = fopen(path2, "r");
@@ -154,8 +197,16 @@ int fileDiff(FILE* stream, char* path1, char* path2, int s1, int e1, int s2, int
                 if (l1 == NULL || l2 == NULL || strcmp(l1, l2)) {
                         result++;
                         fprintf(stream, "«««««\n");
-                        printLine(stream, path1, l1, p1, GREEN, file_name_ignore);
-                        printLine(stream, path2, l2, p2, RED, file_name_ignore);
+                        int s1, s2;
+                        int len1, len2;
+                        if (lineDiff(l1, l2, &s1, &s2, &len1, &len2)) {
+                                printLine2(stream, path1, l1, p1, GREEN, file_name_ignore, s1, len1);                                
+                                printLine2(stream, path2, l2, p2, RED, file_name_ignore, s2, len2);                                
+                        } else {
+                                printLine(stream, path1, l1, p1, GREEN, file_name_ignore);
+                                printLine(stream, path2, l2, p2, RED, file_name_ignore);
+                        }
+
                         fprintf(stream, "»»»»»\n");
                 }
 
