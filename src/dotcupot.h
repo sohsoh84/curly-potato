@@ -9,6 +9,8 @@ char* stagingAreaPath(char* path);
 char* commitsAreaPath(char *path);
 char* tagsAreaPath(char* path);
 
+char* stashAreaPath(char* path);
+
 char* projectName(char* path);
 
 void releativePath(char* path, char* destination);

@@ -22,8 +22,12 @@ git status with T
 
 duplicated code latestversionpath
 
-regex match in log function is fucked up also, copy it from grep
+regex match in log function is fucked up, copy it from grep
 
 empty staging area dosnt work anymore
 
 diff with one word differnece
+
+keep permissions on copies and add that to status
+
+test cupot stash branch

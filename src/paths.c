@@ -47,8 +47,7 @@ int fileExists(const char* filePath) {
 }
 
 char* dirName(const char* path_) {
-        char* path = strdup(path_);
-        char* pathCopy = strdup(path);
+        char* pathCopy = strdup(path_);
         if (pathCopy == NULL) {
                 perror("Error copying path");
                 return NULL;

@@ -7,6 +7,7 @@
 #include "../vcs.h"
 #include "../tracker.h"
 #include "../dotcupot.h"
+#include "../stash.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -63,6 +64,59 @@ int commitDiff(int ignore_unmatch_files, FILE* stream, char* commit_id1, char* c
         for (int i = 0; i < count1; i++) {
                 if (isTracked(track2, all_tracked1[i])) {
                         char* path1 = mergePaths(mergePaths(proj_path1, projectName(cwdPath())), trackRelativePath(all_tracked1[i]));
+                        char* path2 = mergePaths(mergePaths(proj_path2, projectName(cwdPath())), trackRelativePath(all_tracked1[i]));
+                        result += fileDiff(stream, path1, path2, 1, lineCounts(path1), 1, lineCounts(path2), strlen(proj_path1) + 1);                        
+                }
+        }
+
+        return result;
+}
+
+
+// DUPLICATED CODE
+
+int stashDiff(int ignore_unmatch_files, FILE* stream, int stash_id) {
+        if (!dotCupotPath(cwdPath())) {
+                printf("you should be inside a cupot repository\n");
+                return 1;
+        }
+
+        if (!fileExists(getStashDirPath(stash_id))) {
+                printf("Invalid stash_id: %d\n", stash_id);
+                return 1;
+        }
+
+        char* proj_tracker_path = mergePaths(dotCupotPath(cwdPath()), "proj_tracker");
+        FILE* proj_tracker_builder = fopen(proj_tracker_path, "w");
+        fclose(proj_tracker_builder);
+        addRecursivlyToTrackedFile(proj_tracker_path, projectPath(cwdPath()));
+
+        char* track1 = proj_tracker_path, *track2 = stashTrackerPath(stash_id);        
+        char** all_tracked1, **all_tracked2;
+        int count1 = allTrackedFiles(track1, &all_tracked1);
+        int count2 = allTrackedFiles(track2, &all_tracked2);
+
+        for (int i = 0; i < count1; i++) {
+                if (!isTracked(track2, all_tracked1[i])) {
+                        if (!ignore_unmatch_files) 
+                                fprintf(stream, YELLOW "%s exists in project but not in the stash\n" RESET, all_tracked1[i]);
+                }
+        }
+
+        for (int i = 0; i < count2; i++) {
+                if (!isTracked(track1, all_tracked2[i])) {
+                        if (!ignore_unmatch_files)
+                                fprintf(stream, YELLOW "%s exists in stash but not in the project\n" RESET, all_tracked2[i]);
+                }
+        }
+
+        char* proj_path1 = projectPath(cwdPath());
+        char* proj_path2 = getStashDirPath(stash_id);
+
+        int result = 0;
+        for (int i = 0; i < count1; i++) {
+                if (isTracked(track2, all_tracked1[i])) {
+                        char* path1 = mergePaths(proj_path1, trackRelativePath(all_tracked1[i]));
                         char* path2 = mergePaths(mergePaths(proj_path2, projectName(cwdPath())), trackRelativePath(all_tracked1[i]));
                         result += fileDiff(stream, path1, path2, 1, lineCounts(path1), 1, lineCounts(path2), strlen(proj_path1) + 1);                        
                 }

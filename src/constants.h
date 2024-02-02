@@ -17,6 +17,7 @@ static char COMMIT_MESSAGE_ALIAS[] = "messages.alias";
 static char TEMP_LATEST_VERSION[] = "lstversion";
 static char MASTER_BRANCH_NAME[] = "master";
 static char TRACK_FILE_NAME[] = "tracker";
+static char STASH_NAME[] = "stash";
 
 #define MAX_CONFIG_LENGHT       100
 #define MAX_CONFIG_ENTRIES      20    

@@ -12,9 +12,12 @@ int isTracked(char* trackFile, char* path);
 char* commitTrackerPath(char* commit_id);
 char* stageTrackerPath();
 
+char* stashTrackerPath(int stash_id);
+
 int allTrackedFiles(char* track_path, char*** result);
 
 char* trackRelativePath(char* path);
 
 int addRecursivlyToTrackedFile(char* track_path, char* path);
+
 #endif

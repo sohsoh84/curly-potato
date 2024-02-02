@@ -39,6 +39,10 @@ char *tagsAreaPath(char *path) {
         return mergePaths(dotCupotPath(path), TAGS_NAME);
 }
 
+char *stashAreaPath(char *path) {
+        return mergePaths(dotCupotPath(path), STASH_NAME);
+}
+
 char *projectName(char* path) {
         char* tmp = projectPath(path);
         if (!tmp) return NULL;

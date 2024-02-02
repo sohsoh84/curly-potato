@@ -16,6 +16,7 @@
 #include "commands/diff.h"
 #include "commands/merge.h"
 #include "commands/precommit.h"
+#include "commands/stash.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -40,6 +41,7 @@ int runCommand(int argc, char* argv[]) {
         else if (!strcmp(argv[1], "diff")) command_func = diffCommand;
         else if (!strcmp(argv[1], "merge")) command_func = mergeCommand;
         else if (!strcmp(argv[1], "pre-commit")) command_func = precommitCommand;
+        else if (!strcmp(argv[1], "stash")) command_func = stashCommand;
         else {
                 fprintf(stderr, "Invalid Command!\n");
                 return 1;

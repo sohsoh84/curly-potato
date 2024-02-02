@@ -5,6 +5,7 @@
 #include "syscalls.h"
 #include "commits.h"
 #include "dotcupot.h"
+#include "stash.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -150,6 +151,10 @@ char *commitTrackerPath(char *commit_id) {
 
 char *stageTrackerPath() {
         return mergePaths(stagingAreaPath(cwdPath()), TRACK_FILE_NAME);
+}
+
+char* stashTrackerPath(int stash_id) {
+        return mergePaths(getStashDirPath(stash_id), TRACK_FILE_NAME);
 }
 
 char* trackRelativePath(char* path) {
