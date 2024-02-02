@@ -80,9 +80,12 @@ int emptyCommit(CommitConfigs* configs) {
 CommitConfigs* getCommitConfigs(char* commit_id) {
         CommitConfigs* configs = (CommitConfigs*) malloc(sizeof(CommitConfigs));
         FILE *file = fopen(mergePaths(mergePaths(commitsAreaPath(cwdPath()), commit_id), COMMIT_CONF_FILE), "rb");
-        if (!file) return NULL;
+        if (!file) {
+                return NULL;
+        }
 
         fread(configs, sizeof(CommitConfigs), 1, file);
+        fclose(file);
         return configs;
 }
 

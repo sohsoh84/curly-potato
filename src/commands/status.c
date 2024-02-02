@@ -14,6 +14,7 @@
 #include <dirent.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "sys/stat.h"
 
 
 enum FILE_STATUS {
@@ -34,6 +35,14 @@ int status(char* path) {
         if (fileExists(real_path)) {
                 if (!fileExists(latest_version_path)) return ADDED;
                 else if (absoluteDiff(latest_version_path, real_path)) return MODIFIED;
+                else {
+                        struct stat fstat1;
+                        struct stat fstat2;
+
+                        if (stat(latest_version_path, &fstat1) == 0 && stat(real_path, &fstat2) == 0)
+                                if (fstat1.st_mode != fstat2.st_mode) return ACCESS_CHANGED;
+                }
+                
         }
 
         return NOT_CHANGED;
@@ -46,8 +55,22 @@ int in_stage(char* path) {
         char* latest_version_path = latestVersionPath(real_path, TEMP_LATEST_VERSION);
         char* stage_path = stageFilePath(real_path);       
 
-        if (fileExists(latest_version_path) && !absoluteDiff(real_path, latest_version_path)) return 1;
-        if (fileExists(stage_path) && !absoluteDiff(real_path, stage_path)) return 1;
+        if (fileExists(latest_version_path) && !absoluteDiff(real_path, latest_version_path)) {
+                struct stat fstat1;
+                struct stat fstat2;
+
+                if (stat(latest_version_path, &fstat1) == 0 && stat(real_path, &fstat2) == 0)
+                        if (fstat1.st_mode == fstat2.st_mode) return 1;
+        }
+
+        if (fileExists(stage_path) && !absoluteDiff(real_path, stage_path)) {
+                struct stat fstat1;
+                struct stat fstat2;
+
+                if (stat(stage_path, &fstat1) == 0 && stat(real_path, &fstat2) == 0)
+                        if (fstat1.st_mode == fstat2.st_mode) return 1;
+        }
+        
         return 0;
 }
 
@@ -88,9 +111,9 @@ void printStatusOfFiles(char* directoryName) {
                         printf("%s: ", rel_path);
                         printf(RESET);
 
-                        printf(status_ == ADDED ? GREEN : status_ == MODIFIED ? YELLOW : status_ == DELETED ? RED : BLUE);
+                        printf(status_ == ADDED ? GREEN : status_ == MODIFIED ? YELLOW : status_ == ACCESS_CHANGED ? BLUE : BLUE);
                         printf((in_stage_ ? "+" : "-"));
-                        printf(status_ == ADDED ? "A" : status_ == MODIFIED ? "M" : status_ == DELETED ? "D" : "T");
+                        printf(status_ == ADDED ? "A" : status_ == MODIFIED ? "M" : status_ == ACCESS_CHANGED ? "T" : "D");
                         printf(RESET "\n");
                 }
         }

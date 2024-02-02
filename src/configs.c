@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "utils.h"
 
 struct Config* createConfig() {
         Config* config = malloc(sizeof(Config));
@@ -78,6 +79,7 @@ int readConfigFile(FILE *file, struct Config *config) {
                 strcpy(tmpKey, line);
                 tmpKey[ind] = '\0';
                 strcpy(tmpValue, line + ind + 1);
+                strip(tmpValue);
                 if (addEntry(config, tmpKey, tmpValue))
                         return 1;
         }

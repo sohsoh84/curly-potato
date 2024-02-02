@@ -32,7 +32,7 @@ int removeFileDir(char* path) {
 
 int copyFileDir(char* src, char* dest) {
         char command[PATH_MAX];
-        snprintf(command, sizeof(command), "cp -r %s %s", src, dirName(dest));
+        snprintf(command, sizeof(command), "cp -rp %s %s", src, dirName(dest));
         if (system(command) == -1) {
                 fprintf(stderr, "something went wrong while trying to copy %s to %s\n", src, dest);
                 return 1;
@@ -43,7 +43,7 @@ int copyFileDir(char* src, char* dest) {
 
 int copyDirWithName(char *src, char *dest) {
         char command[PATH_MAX];
-        snprintf(command, sizeof(command), "cp -R %s %s", src, dest);
+        snprintf(command, sizeof(command), "cp -Rp %s %s", src, dest);
         if (system(command) == -1) {
                 fprintf(stderr, "something went wrong while trying to copy -R %s to %s\n", src, dest);
                 return 1;
