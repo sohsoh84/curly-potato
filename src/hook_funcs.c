@@ -56,7 +56,11 @@ HOOK_RESULT eof_blank_space(char *path) {
 char brance_not(char c) {
         if (c == ')') return '(';
         if (c == ']') return '[';
-        return '{';
+        if (c == '}') return '{';
+        if (c == '(') return ')';
+        if (c == '{') return '}';
+        if (c == '[') return ']';
+        return '(';
 }
 
 HOOK_RESULT balance_braces(char* path) {

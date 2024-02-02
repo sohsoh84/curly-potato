@@ -14,4 +14,6 @@ HOOK_RESULT todo_check(char* path);
 
 HOOK_RESULT static_error_check(char *path);
 
+char brance_not(char c);
+
 #endif

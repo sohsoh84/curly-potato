@@ -5,6 +5,7 @@
 #include "../tracker.h"
 #include "../constants.h"
 #include "../hook_funcs.h"
+#include "../hook_fixes.h"
 #include "../utils.h"
 
 #include <stdio.h>
@@ -12,8 +13,9 @@
 #include <stdlib.h>
 
 #define hook_cnt        6
-char hook_names[hook_cnt][50] = {"balance-braces", "eof-blank-space", "character-limit", "file-size-check", "todo-check", "static-error-check"};
-HOOK_RESULT (*hook_funcs[hook_cnt]) (char*) = {balance_braces, eof_blank_space, character_limit, file_size_check, todo_check, static_error_check};
+char hook_names[hook_cnt][50] = {"eof-blank-space", "balance-braces", "character-limit", "file-size-check", "todo-check", "static-error-check"};
+HOOK_RESULT (*hook_funcs[hook_cnt]) (char*) = {eof_blank_space, balance_braces, character_limit, file_size_check, todo_check, static_error_check};
+HOOK_FIX_RESULT (*fix_funcs[hook_cnt]) (char*) = {eof_blank_space_fix, balance_braces_fix, NULL,          NULL,      NULL,        NULL         };
 
 int validHook(char* hook) {
         for (int i = 0; i < hook_cnt; i++)
@@ -23,8 +25,9 @@ int validHook(char* hook) {
         return 0;
 }
 
-void runHooks(char* file) {
+int runHooks(char* file, int try_fix) {
         printf("%s:\n", file + strlen(stagingAreaPath(cwdPath())) + 1);
+        int fixed = 0;
         for (int j = 0; j < hook_cnt; j++) {
                 if (hookExists(hook_names[j])) {
                         printf("\t%s:", hook_names[j]);
@@ -36,9 +39,24 @@ void runHooks(char* file) {
                         HOOK_RESULT res = hook_funcs[j](file);
                         if (res == HOOK_PASSED) printf(GREEN "PASSED\n" RESET);
                         if (res == HOOK_SKIPPED) printf(YELLOW "SKIPPED\n" RESET);
-                        if (res == HOOK_FAILED) printf(RED "FAILED\n" RESET);
+                        if (res == HOOK_FAILED) {
+                                printf(RED "FAILED" RESET);
+                                if (try_fix) {
+                                        printf(BLUE " > fix: " RESET);
+                                        if (fix_funcs[j] == NULL) printf(YELLOW "UNAVAILABLE" RESET);
+                                        else {
+                                                HOOK_FIX_RESULT res = fix_funcs[j](file);
+                                                if (res == FIX_FAILED) printf(RED "FAILED" RESET);
+                                                else printf(GREEN "FIXED" RESET), fixed++;
+                                        }
+                                }
+
+                                printf("\n");
+                        }
                 }
         }
+
+        return fixed;
 }
 
 int precommitCommand(int argc, char* argv[]) {
@@ -95,17 +113,21 @@ int precommitCommand(int argc, char* argv[]) {
                 return 0;
         }
 
-        if (argc == 0) {
+        if (argc == 0 || (argc == 1 && !strcmp(argv[0], "-u"))) {
                 char** tracked_filse;
+                int fixed = 0;
                 int count = allTrackedFiles(stageTrackerPath(), &tracked_filse);
                 for (int i = 0; i < count; i++) {
                         char rel_path[MAX_PATH_LEN];
                         releativePath(tracked_filse[i], rel_path);
 
                         char* stage_path = mergePaths(stagingAreaPath(cwdPath()), rel_path);
-                        if (fileExists(stage_path)) runHooks(stage_path);
+                        if (fileExists(stage_path)) fixed += runHooks(stage_path, (argc == 1) ? 1 : 0);
                 }       
 
+                if (fixed)
+                        printf(CYAN "there are some fixed hooks, the changes are not applied in main files, to see new files,\n"
+                        "run \"cupot commit\" and then \"cupot checkout HEAD --force\"\n" RESET);
                 return 0;
         }
 
@@ -120,7 +142,7 @@ int precommitCommand(int argc, char* argv[]) {
                         releativePath(argv[i], rel_path);
 
                         char* stage_path = mergePaths(stagingAreaPath(cwdPath()), rel_path);
-                        if (fileExists(stage_path)) runHooks(stage_path);
+                        if (fileExists(stage_path)) runHooks(stage_path, 0);
                         else printf("File %s is not staged\n", argv[i]);
                 }
 
