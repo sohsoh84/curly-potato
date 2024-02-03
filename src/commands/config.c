@@ -1,4 +1,5 @@
 #include "config.h"
+#include "../cmdline.h"
 #include "../configs.h"
 #include "../paths.h"
 #include "../dotcupot.h"
@@ -12,6 +13,17 @@
 
 static int is_alias(const char* key) {
         return strncmp(key, "alias.", 6) == 0;
+}
+
+static int is_valid_alias(const char* value_) {
+        char* value = strdup(value_);
+        char* first_spacee = strchr(value, ' ');
+        if (first_spacee != NULL) *first_spacee = '\0';
+        for (int i = 0; i < CMD_CNT; i++)
+                if (!strcmp(value, ALL_COMMANDS[i]))
+                        return 1;
+
+        return 0;
 }
 
 int configCommand(int argc, char *argv[]) {
@@ -49,6 +61,11 @@ int configCommand(int argc, char *argv[]) {
         // TODO: check if the strings are user.name and user.email
         // TODO: throw some errors bruh :)
 
+
+        if (is_alias(key) && !is_valid_alias(value)) {
+                fprintf(stderr, "Invalid command in alias value!\n");
+                return 1;
+        }
 
         char* filePath = NULL;
         if (!isGlobal) {

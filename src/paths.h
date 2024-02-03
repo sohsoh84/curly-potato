@@ -26,4 +26,8 @@ int isDirectory(char* path);
 
 int isDirectoryEmpty(char* path);
 
+char* relativePathString(char* path, char* cwd);
+char* relativePathStringUnsafe(char* path, char* cwd);
+
+char* BaseName(char* path);
 #endif

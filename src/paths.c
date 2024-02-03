@@ -15,6 +15,11 @@ char *userHomePath() {
         return getpwuid(getuid()) -> pw_dir;
 }
 
+char* BaseName(char* name) {
+        char *copy = strdup(name);
+        return basename(copy);
+}
+
 char *cwdPath() {
         char* cwd = (char*) malloc(4096);
         if (cwd == NULL || getcwd(cwd, 4096) == NULL) {
@@ -165,3 +170,24 @@ int isDirectoryEmpty(char *path) {
         return count == 0;
 }
 
+char *relativePathString(char *path, char* cwd) {
+        char* result = (char*) calloc(MAX_PATH_LEN, sizeof(char));
+        while (!isSubdirectory(cwd, path)) {
+                cwd = dirName(cwd);
+                strcat(result, "../");
+        }
+
+        strcat(result, path + strlen(cwd) + (path[strlen(cwd)] == '/' ? 1 : 0));
+        return result;
+}
+
+char *relativePathStringUnsafe(char *path, char *cwd) {
+        char* result = (char*) calloc(MAX_PATH_LEN, sizeof(char));
+        while (!isSubdirectoryUnsafe(cwd, path)) {
+                cwd = dirName(cwd);
+                strcat(result, "../");
+        }
+
+        strcat(result, path + strlen(cwd) + (path[strlen(cwd)] == '/' ? 1 : 0));
+        return result;
+}

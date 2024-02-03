@@ -39,7 +39,12 @@ int mergeCommand(int argc, char *argv[]) {
         
         int diff_res = commitDiff(1, stdout, head_commit1, head_commit2);
         if (diff_res) {
-                printf(RED "merge failed due to conflicts\n" RESET);
+                printf(RED "merge failed due to conflicts\n" RESET "do you want to resolve the conflict[y: yes, n[default]: no]? \n");
+                char c;
+                if (c != 'y')
+                        return 1;
+                
+                printf("Hal nadashtam ino implement konam :( bakhti!\n");
                 return 1;
         }
 

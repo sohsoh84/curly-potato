@@ -74,7 +74,7 @@ int in_stage(char* path) {
         return 0;
 }
 
-void printStatusOfFiles(char* directoryName) {
+void printStatusOfFiles(char* directoryName, char* starting_dir_) {
         DIR *dir = opendir(directoryName);
         if (dir == NULL) {
                 printf("Error: Cannot open directory\n");
@@ -92,10 +92,10 @@ void printStatusOfFiles(char* directoryName) {
                 char filePath[PATH_MAX];
                 snprintf(filePath, sizeof(filePath), "%s/%s", directoryName, ent -> d_name);
 
-                if (!strcmp(basename(filePath), ".cupot")) continue;
+                if (!strcmp(BaseName(filePath), ".cupot")) continue;
                 
                 if (ent -> d_type == DT_DIR) {
-                        printStatusOfFiles(filePath);
+                        printStatusOfFiles(filePath, starting_dir_);
                 } else if (ent -> d_type == DT_REG) {
                         char real_path[PATH_MAX];
                         realpath(filePath, real_path);
@@ -108,7 +108,7 @@ void printStatusOfFiles(char* directoryName) {
                         int status_ = status(real_path), in_stage_ = in_stage(real_path);
                         if (status_ == NOT_CHANGED) continue;
                         printf((in_stage_ ? GREEN : RED));
-                        printf("%s: ", rel_path);
+                        printf("%s:    ", relativePathString(real_path, starting_dir_));
                         printf(RESET);
 
                         printf(status_ == ADDED ? GREEN : status_ == MODIFIED ? YELLOW : status_ == ACCESS_CHANGED ? BLUE : BLUE);
@@ -121,7 +121,7 @@ void printStatusOfFiles(char* directoryName) {
         closedir(dir);
 }
 
-void printRemoveStatus(char* track_file, char* starting_path_) {
+void printRemoveStatus(char* track_file, char* starting_path_, char* base) {
         char starting_path[PATH_MAX];
         realpath(starting_path_, starting_path);
         char** all_tracked;
@@ -133,7 +133,7 @@ void printRemoveStatus(char* track_file, char* starting_path_) {
                                 in_stage_ = 0;
 
                         printf((in_stage_ ? GREEN : RED));
-                        printf("%s: ", all_tracked[i] + strlen(starting_path) + 1);
+                        printf("%s:    ", relativePathStringUnsafe(all_tracked[i], base));
                         printf(RESET);
 
                         printf(RED);
@@ -150,18 +150,18 @@ int statusCommand(int argc, char *argv[]) {
                 return 1;
         }
 
+        char* starting_path = strdup(cwdPath());
         if (argc && !strcmp(argv[0], "--all")) {
-                chroot(projectPath(cwdPath()));
+                starting_path = strdup(projectPath(cwdPath()));
         }
         
-        char* starting_path = cwdPath();
         buildProjectFromCommit(mergePaths(dotCupotPath(cwdPath()), TEMP_LATEST_VERSION), getHead(getCWB())->id);
         char* lastest_version_path = mergePaths(mergePaths(dotCupotPath(cwdPath()), TEMP_LATEST_VERSION), 
                 projectName(cwdPath()));
 
         int _ = 0;
-        printStatusOfFiles(starting_path); // TODO:
-        printRemoveStatus(commitTrackerPath(getCWC()), starting_path);
+        printStatusOfFiles(starting_path, cwdPath()); // TODO:
+        printRemoveStatus(commitTrackerPath(getCWC()), starting_path, cwdPath());
         return 0;
 }
 
