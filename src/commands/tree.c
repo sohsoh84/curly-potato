@@ -13,10 +13,22 @@ char* firstTwoLetters(char* str) {
         return result;
 }
 
+int is_par_of_any(CommitConfigs* mas) {
+        for (int i = 0; i < count; i++)
+                if (!strcmp(configs[i]->parent_id, mas->id) && !strcmp(configs[i]->branch_name, MASTER_BRANCH_NAME))
+                        return 1;
+
+        return 0;
+}
+
 void dfs(CommitConfigs* mas, CommitConfigs* brn, int new_mas, int new_brn) {
         if (!new_mas && !new_brn) return;
         if (new_mas) printf("%s ", firstTwoLetters(mas->id));
-        else printf("|  ");
+        else {
+
+
+                printf(is_par_of_any(mas) ? "|  " : "   ");
+        }
         if (new_brn) printf("%s ", firstTwoLetters(brn->id));
         else if (brn) printf("|");
         printf("\n");
@@ -42,9 +54,12 @@ void dfs(CommitConfigs* mas, CommitConfigs* brn, int new_mas, int new_brn) {
                 }
         }
 
-        if (branched) printf("|.\\ \n");
+        if (branched) {
+                printf(is_par_of_any(mas) ? "|.\\\n" : "  \\\n");
+        }
+
         else if (nex_brn != brn && nex_mas != mas) printf("|  |\n");
-        else if (nex_brn != brn) printf("|  |\n");
+        else if (nex_brn != brn) printf(is_par_of_any(mas) ? "|  |\n" : "   |\n");
         else if (nex_mas != mas) printf("|  %s\n", (nex_brn ? "|" : ""));
         else {
                 for (int i = 0; i < count; i++) {
