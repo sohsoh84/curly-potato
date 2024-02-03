@@ -8,6 +8,7 @@
 #include "../utils.h"
 #include "../tracker.h"
 #include "../staging_area.h"
+#include "../syscalls.h"
 #include "checkout.h"
 
 #include <stdio.h>
@@ -37,30 +38,25 @@ int mergeCommand(int argc, char *argv[]) {
 
         char* head_commit1 = getHead(argv[1])->id, *head_commit2 = getHead(argv[2])->id;
         
-        int diff_res = commitDiff(1, stdout, head_commit1, head_commit2);
+        int diff_res = commitDiff(1, stdout, head_commit1, head_commit2, 0);
         if (diff_res) {
                 printf(RED "merge failed due to conflicts\n" RESET "do you want to resolve the conflict[y: yes, n[default]: no]? \n");
-                char c;
-                if (c != 'y')
-                        return 1;
-                
-                printf("Hal nadashtam ino implement konam :( bakhti!\n");
-                return 1;
+                char s[40];
+                fgets(s, sizeof(s), stdin);       
+                strip(s);         
+                if (!strcmp(s, "y")) {
+                        if (commitDiff(1, stdout, head_commit1, head_commit2, 1)) return 1;
+                } else return 1;
         }
 
         char* proj_path1 = mergePaths(dotCupotPath(cwdPath()), "temp1");
         char* proj_path2 = mergePaths(dotCupotPath(cwdPath()), "temp2");
 
-        buildProjectFromCommit(proj_path1, head_commit1);
-        buildProjectFromCommit(proj_path2, head_commit2);
-        
         clearStageingAreas(head_commit1);
         char** tracked_paths2;
         int count2 = allTrackedFiles(commitTrackerPath(head_commit2), &tracked_paths2);
         for (int i = 0; i < count2; i++)
                 addTrackedFile(stageTrackerPath(), tracked_paths2[i]);
-
-        buildFromMerge(stageTrackerPath(), stagingAreaPath(cwdPath()), head_commit1, head_commit2);
 
         char commit_message[1024];
         sprintf(commit_message, "Merge %s into %s", argv[2], argv[1]);
@@ -76,6 +72,13 @@ int mergeCommand(int argc, char *argv[]) {
         if (!email) {
                 fprintf(stderr, "you should set user.email variable!\n");
                 return 1;
+        }
+
+        if (!diff_res) {
+                buildFromMerge(stageTrackerPath(), stagingAreaPath(cwdPath()), head_commit1, head_commit2);
+        } else {
+                copyDirWithoutOverwrite(mergePaths(proj_path1, projectName(cwdPath())), stagingAreaPath(cwdPath()));
+                copyDirWithoutOverwrite(mergePaths(proj_path2, projectName(cwdPath())), stagingAreaPath(cwdPath()));
         }
 
         CommitConfigs* config = createCommitConfigs(head_commit1, argv[1], 

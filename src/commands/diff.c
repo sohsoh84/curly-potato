@@ -8,6 +8,7 @@
 #include "../tracker.h"
 #include "../dotcupot.h"
 #include "../stash.h"
+#include "../syscalls.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -20,7 +21,7 @@ void printLine(FILE* stream, char* file_name, char* line, int lc, const char* CO
         fprintf(stream, RESET);
 }
 
-int commitDiff(int ignore_unmatch_files, FILE* stream, char* commit_id1, char* commit_id2) {
+int commitDiff(int ignore_unmatch_files, FILE* stream, char* commit_id1, char* commit_id2, int conflict_manager) {
         if (!dotCupotPath(cwdPath())) {
                 printf("you should be inside a cupot repository\n");
                 return 1;
@@ -65,7 +66,7 @@ int commitDiff(int ignore_unmatch_files, FILE* stream, char* commit_id1, char* c
                 if (isTracked(track2, all_tracked1[i])) {
                         char* path1 = mergePaths(mergePaths(proj_path1, projectName(cwdPath())), trackRelativePath(all_tracked1[i]));
                         char* path2 = mergePaths(mergePaths(proj_path2, projectName(cwdPath())), trackRelativePath(all_tracked1[i]));
-                        result += fileDiff(stream, path1, path2, 1, lineCounts(path1), 1, lineCounts(path2), strlen(proj_path1) + 1);                        
+                        result += fileDiff(stream, path1, path2, 1, lineCounts(path1), 1, lineCounts(path2), strlen(proj_path1) + 1, conflict_manager);                        
                 }
         }
 
@@ -118,7 +119,7 @@ int stashDiff(int ignore_unmatch_files, FILE* stream, int stash_id) {
                 if (isTracked(track2, all_tracked1[i])) {
                         char* path1 = mergePaths(proj_path1, trackRelativePath(all_tracked1[i]));
                         char* path2 = mergePaths(mergePaths(proj_path2, projectName(cwdPath())), trackRelativePath(all_tracked1[i]));
-                        result += fileDiff(stream, path1, path2, 1, lineCounts(path1), 1, lineCounts(path2), strlen(proj_path1) + 1);                        
+                        result += fileDiff(stream, path1, path2, 1, lineCounts(path1), 1, lineCounts(path2), strlen(proj_path1) + 1, 0);                        
                 }
         }
 
@@ -168,13 +169,51 @@ void printLine2(FILE* stream, char* file_name, char* line, int lc, const char* C
         fprintf(stream, RESET);
 }
 
-int fileDiff(FILE* stream, char* path1, char* path2, int s1, int e1, int s2, int e2, int file_name_ignore) {
+void editFile(char* path, int *lc, char* str) {
+        if (*lc > lineCounts(path)) {
+                FILE* file = fopen(path, "a");
+                fprintf(file, "\n%s", (str ? str : ""));
+                fclose(file);
+                (*lc)++;
+                return;
+        }
+
+        char backup_path[MAX_PATH_LEN];
+        strcpy(backup_path, path);
+        strcat(backup_path, ".bak");
+
+        FILE* backup_file = fopen(backup_path, "w");
+        FILE* file = fopen(path, "r");
+        int l = 0;
+        char line[4096];
+        while (fgets(line, sizeof(line), file)) {
+                l++;
+                if (l == *lc) fprintf(backup_file, "%s\n", (str ? str : ""));
+                else fprintf(backup_file, "%s", line);
+        }
+
+        fclose(file);
+        fclose(backup_file);
+        removeFileDir(path);
+        copyDirWithName(backup_path, path);
+        removeFileDir(backup_path);
+}
+
+int fileDiff(FILE* stream, char* path1, char* path2, int s1, int e1, int s2, int e2, int file_name_ignore, int conflict_manager) {
+        char backup_path[MAX_PATH_LEN];
+        strcpy(backup_path, path1);
+        strcat(backup_path, ".bak");
+        if (conflict_manager) {
+                copyDirWithName(path1, backup_path);
+        }
+
         FILE* f1 = fopen(path1, "r");
         FILE* f2 = fopen(path2, "r");
 
         if (f1 == NULL || f2 == NULL) {
                 return 1;
         }
+
         
         readDummyLines(f1, s1 - 1);
         readDummyLines(f2, s2 - 1);
@@ -208,13 +247,51 @@ int fileDiff(FILE* stream, char* path1, char* path2, int s1, int e1, int s2, int
                         }
 
                         fprintf(stream, "»»»»»\n");
+
+                        if (conflict_manager) {
+                                printf(CYAN "\nthere is conflict between branch1 and branch2\n" RESET);
+                                printf("options: \n\t-> 1[write line from the first branch]\n\t-> 2[write line from the second branch]\n\t"
+                                        "-> edit: resolve confligt manually\n\t-> quit\n" RESET);
+
+                                int done = 0;
+                                while (!done) {
+                                        done = 1;
+                                        char res[40];
+                                        fgets(res, sizeof(res), stdin);
+                                        strip(res);
+
+                                        if (!strcmp(res, "1")) continue;
+                                        else if (!strcmp(res, "2") || !strcmp(res, "edit")) {
+                                                char* fres = l2;
+                                                if (!strcmp(res, "edit")) {
+                                                        printf("edit box: ");
+                                                        char line[4096];
+                                                        fgets(line, sizeof(line), stdin);
+                                                        fres = strdup(line);
+                                                }
+
+                                                editFile(backup_path, &p1, fres);
+                                        } else if (!strcmp(res, "quit")) {
+                                                return 1;
+                                        } else {
+                                                printf("invalid command, try again\n");
+                                                done = 0;
+                                        }
+                                }
+                        }
                 }
 
                 free(l1);
                 free(l2);
         }
 
-        return result;
+        if (conflict_manager) {
+                removeFileDir(path1);
+                copyDirWithName(backup_path, path1);
+                removeFileDir(backup_path);
+        }
+
+        return conflict_manager ? 0 : result;
 }
 
 int diffCommand(int argc, char* argv[]) {
@@ -225,7 +302,7 @@ int diffCommand(int argc, char* argv[]) {
         }
 
         if (!strcmp(argv[0], "-c")) {
-                commitDiff(0, stdout, argv[1], argv[2]);
+                commitDiff(0, stdout, argv[1], argv[2], 0);
                 return 1;
         }
 
@@ -302,7 +379,7 @@ int diffCommand(int argc, char* argv[]) {
                 return 1;
         }
 
-        if (!fileDiff(stdout, path1, path2, start1, end1, start2, end2, 0)) {
+        if (!fileDiff(stdout, path1, path2, start1, end1, start2, end2, 0, 0)) {
                 fprintf(stderr, "No Diff found for file :)\n");
         }
         return 0;

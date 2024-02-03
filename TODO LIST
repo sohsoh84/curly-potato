@@ -1,35 +1,38 @@
-remove all staging area backups after commit? (should you?)
-git add --redo
+remove all staging area backups after commit? (should you?) -> done
+git add --redo -> ignored
 ##################### alias
 
-backup and undo backups in reset for redo
+backup and undo backups in reset for redo -> ignored
 check if the git add fucking works with deleted files and if not, what the fuck you should do, it fucking dosnt work with status
 check stagings using lstversion in git add -n
 
-LOG -since and -before with better time formats
+LOG -since and -before with better time formats -> dont care
 
 number of files commited(log), add the removed files to this
 
 cupot add .
 
-checking if there is no uncommited files in checkout dosnt work with deleted files // probably done
+checking if there is no uncommited files in checkout dosnt work with deleted files -> done
 
-status --all dosnt work
+status --all dosnt work -> done
 
-clear empty Directories
+clear empty Directories -> done
 
-git status with T
+git status with T -> done
 
-duplicated code latestversionpath
+duplicated code latestversionpath -> done
 
 regex match in log function is fucked up, copy it from grep
 
-empty staging area dosnt work anymore
+empty staging area dosnt work anymore -> done
 
-diff with one word differnece
+diff with one word differnece -> done
 
-keep permissions on copies and add that to status
+keep permissions on copies and add that to status -> done
 
 test cupot stash branch
 
 test reset and the tracker in reset
+
+TODO: hard test diff fucntion
+
