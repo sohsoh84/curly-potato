@@ -160,3 +160,50 @@ HOOK_RESULT time_limit(char* path) {
         if (duration > 10 * 60) return HOOK_FAILED;
         return HOOK_PASSED;
 }
+
+HOOK_RESULT indentation_check(char* path) {
+        if (!checkExtension(path, 2, "cpp", "c")) return HOOK_SKIPPED;
+        int req_t = 0;
+
+        FILE* file = fopen(path, "r");
+        char line[4096];
+        int style = 0; // 0: nothing, 1: sohsoh, 2: mellat
+        while (fgets(line, sizeof(line), file) != NULL) {
+                strip(line);
+                if (!strlen(line)) continue;
+                int open_cnt = 0, close_cnt = 0, non_tab = 0, tabs = 0;
+                for (int i = 0; i < strlen(line); i++) {
+                        if (line[i] == '{') open_cnt++;
+                        if (line[i] == '}') close_cnt++;
+                        if (line[i] == '\t') {
+                                if (!non_tab) 
+                                        tabs++;
+                        } else non_tab = 1;
+                }
+
+
+                if (tabs != req_t - close_cnt) return HOOK_FAILED;
+                if (open_cnt + close_cnt > 1) return HOOK_FAILED;
+                if (open_cnt + close_cnt == 0) continue;
+
+                if (close_cnt) {
+                        if (strlen(line) != tabs + 1 || line[strlen(line) - 1] != '}') return HOOK_FAILED;
+                        req_t--;
+                        continue;
+                }
+
+                if (line[strlen(line) - 1] != '{') return HOOK_FAILED;
+
+                if (strlen(line) == tabs + 1) {
+                        if (style == 0 || style == 2) style = 2;
+                        else return HOOK_FAILED;
+                } else {
+                        if (style == 0 || style == 1) style = 1;
+                        else return HOOK_FAILED;
+                }
+
+                req_t++;
+        }
+
+        return req_t > 0 ? HOOK_FAILED : HOOK_PASSED;
+}

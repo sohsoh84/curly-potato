@@ -12,10 +12,10 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define hook_cnt        7
-char hook_names[hook_cnt][50] = {"eof-blank-space", "balance-braces", "character-limit", "file-size-check", "todo-check", "static-error-check", "time-limit"};
-HOOK_RESULT (*hook_funcs[hook_cnt]) (char*) = {eof_blank_space, balance_braces, character_limit, file_size_check, todo_check, static_error_check, time_limit};
-HOOK_FIX_RESULT (*fix_funcs[hook_cnt]) (char*) = {eof_blank_space_fix, balance_braces_fix, NULL,          NULL,      NULL,        NULL        ,     NULL };
+#define hook_cnt        8
+char hook_names[hook_cnt][50] = {"eof-blank-space", "balance-braces", "character-limit", "file-size-check", "todo-check", "static-error-check", "time-limit", "indentation-check"};
+HOOK_RESULT (*hook_funcs[hook_cnt]) (char*) = {eof_blank_space, balance_braces, character_limit, file_size_check, todo_check, static_error_check, time_limit, indentation_check};
+HOOK_FIX_RESULT (*fix_funcs[hook_cnt]) (char*) = {eof_blank_space_fix, balance_braces_fix, NULL,          NULL,      NULL,        NULL        ,     NULL ,     NULL};
 
 int validHook(char* hook) {
         for (int i = 0; i < hook_cnt; i++)

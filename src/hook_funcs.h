@@ -16,6 +16,8 @@ HOOK_RESULT static_error_check(char *path);
 
 HOOK_RESULT time_limit(char* path);
 
+HOOK_RESULT indentation_check(char* path);
+
 char brance_not(char c);
 
 #endif
