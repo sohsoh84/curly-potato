@@ -6,6 +6,7 @@
 #include "../staging_area.h"
 #include "../configs.h"
 #include "../vcs.h"
+#include "../tracker.h"
 #include "../hook.h"
 
 #include <stdlib.h>
@@ -13,6 +14,12 @@
 #include <string.h>
 
 int commitCommand(int argc, char *argv[]) {
+        int revert_state = 0;
+        if (argc == -1) {
+                argc = 2;
+                revert_state = 1;
+        }
+
         if (!dotCupotPath(cwdPath())) {
                 fprintf(stderr, "you should be in a cupot repository\n");
                 return 1;
@@ -46,9 +53,20 @@ int commitCommand(int argc, char *argv[]) {
                 return 1;
         }
 
-        if (isDirectoryEmpty(stagingAreaPath(cwdPath()))) {
-                fprintf(stderr, "staging area is empty, nothing to commit!\n");
-                return 1;
+        if (!revert_state && isDirectoryEmpty(mergePaths(stagingAreaPath(cwdPath()), projectName(cwdPath())))) {
+                char** all_files_commit;
+                int count = allTrackedFiles(commitTrackerPath(getCWC()), &all_files_commit);
+
+                int found_diff = 0;
+                for (int i = 0; i < count; i++) {
+                        if (!isTracked(stageTrackerPath(), all_files_commit[i])) {
+                                found_diff = 1;
+                        }
+                }
+                if (!found_diff) {
+                        fprintf(stderr, "staging area is empty, nothing to commit!\n");
+                        return 1;
+                }
         }
 
         char commit_message[MAX_COMMIT_MESSAGE_LEN];
@@ -74,7 +92,7 @@ int commitCommand(int argc, char *argv[]) {
                 return 1;
         }
 
-        if (hookCount()) {
+        if (!revert_state && hookCount()) {
                 printf("Checking for hooks...\n");
                 if (!checkHooks()) {
                         printf(RED "You have failed hooks in your staging area\n" RESET "Do you want to commit anyway? [y: yes, s: show, n(DEFAULT) no]?\n");

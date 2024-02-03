@@ -83,7 +83,7 @@ int revertCommand(int argc, char *argv[]) {
                 char* args[2];
                 args[0] = strdup("-m");
                 args[1] = commit_message;
-                commitCommand(2, args);
+                commitCommand(-1, args);
         }
 
         printf("Revert Completed!\n");

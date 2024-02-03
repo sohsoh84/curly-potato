@@ -17,7 +17,7 @@ int compare_tags(const void* a, const void* b) {
 }
 
 void printTag(Tag* tag) {
-        printf("Tag: %s\n", tag->tag_id);
+        printf(YELLOW "Tag: %s\n" RESET, tag->tag_id);
         printf("Commit: %s\n", tag->commit_id);
         printf("Author: %s <%s>\n", tag->author_name, tag->author_email);
         strip(tag->date);
