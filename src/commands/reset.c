@@ -48,7 +48,7 @@ static int reset(char* file_path) {
 
 int resetCommand(int argc, char *argv[]) {
         if (!dotCupotPath(cwdPath())) {
-                printf("you should be inside a cupot repository to run this command\n");
+                fprintf(stderr, RED "You should be inside a cupot repository to run this command\n" RESET "try running cupot init\n");
                 return 1;
         }
 

@@ -12,10 +12,10 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define hook_cnt        8
-char hook_names[hook_cnt][50] = {"eof-blank-space", "balance-braces", "character-limit", "file-size-check", "todo-check", "static-error-check", "time-limit", "indentation-check"};
-HOOK_RESULT (*hook_funcs[hook_cnt]) (char*) = {eof_blank_space, balance_braces, character_limit, file_size_check, todo_check, static_error_check, time_limit, indentation_check};
-HOOK_FIX_RESULT (*fix_funcs[hook_cnt]) (char*) = {eof_blank_space_fix, balance_braces_fix, NULL,          NULL,      NULL,        NULL        ,     NULL ,     NULL};
+#define hook_cnt        9
+char hook_names[hook_cnt][50] = {"eof-blank-space", "balance-braces", "character-limit", "file-size-check", "todo-check", "static-error-check", "time-limit", "indentation-check", "format-check"};
+HOOK_RESULT (*hook_funcs[hook_cnt]) (char*) = {eof_blank_space, balance_braces, character_limit, file_size_check, todo_check, static_error_check, time_limit, indentation_check,   format_check};
+HOOK_FIX_RESULT (*fix_funcs[hook_cnt]) (char*) = {eof_blank_space_fix, balance_braces_fix, NULL,          NULL,      NULL,        NULL        ,     NULL ,     NULL,                 NULL};
 
 int validHook(char* hook) {
         for (int i = 0; i < hook_cnt; i++)
@@ -61,7 +61,7 @@ int runHooks(char* file, int try_fix) {
 
 int precommitCommand(int argc, char* argv[]) {
         if (!dotCupotPath(cwdPath())) {
-                printf("you should be inside a cupot repository\n");
+                fprintf(stderr, RED "You should be inside a cupot repository to run this command\n" RESET "try running cupot init\n");
                 return 1;
         }
 

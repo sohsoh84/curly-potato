@@ -151,7 +151,7 @@ void stageRemove(char* path) {
 
 int addCommand(int argc, char *argv[]) {
         if (!dotCupotPath(cwdPath())) {
-                fprintf(stderr, "you are not in a cupot repository!!\n");
+                fprintf(stderr, RED "You should be inside a cupot repository to run this command\n" RESET "try running cupot init\n");
                 return 1;
         }
 

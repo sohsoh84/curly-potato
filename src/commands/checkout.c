@@ -82,7 +82,7 @@ int checkout(char* commit_id, int revert_state) {
 
 int checkoutCommand(int argc, char *argv[]) {
         if (!dotCupotPath(cwdPath())) {
-                fprintf(stderr, "you should be inside a cupot repository\n");
+                fprintf(stderr, RED "You should be inside a cupot repository to run this command\n" RESET "try running cupot init\n");
                 return 1;
         }
 

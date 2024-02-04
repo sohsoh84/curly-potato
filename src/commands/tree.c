@@ -1,6 +1,8 @@
 #include "tree.h"
 #include "../commits.h"
 #include "../constants.h"
+#include "../dotcupot.h"
+#include "../paths.h"
 
 #include <stdio.h>
 
@@ -76,6 +78,10 @@ void dfs(CommitConfigs* mas, CommitConfigs* brn, int new_mas, int new_brn) {
 }
 
 int treeCommand(int argc, char *argv[]) {
+        if (!dotCupotPath(cwdPath())) {
+                fprintf(stderr, RED "You should be inside a cupot repository to run this command\n" RESET "try running cupot init\n");
+                return 1;
+        }
         count = getCommitCounts();
         configs = getAllCommitConfigs();
         

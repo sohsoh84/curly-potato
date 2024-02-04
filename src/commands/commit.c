@@ -21,7 +21,7 @@ int commitCommand(int argc, char *argv[]) {
         }
 
         if (!dotCupotPath(cwdPath())) {
-                fprintf(stderr, "you should be in a cupot repository\n");
+                fprintf(stderr, RED "You should be inside a cupot repository to run this command\n" RESET "try running cupot init\n");
                 return 1;
         }
 
@@ -119,6 +119,11 @@ int commitCommand(int argc, char *argv[]) {
 }
 
 int setCommand(int argc, char *argv[]) {
+        if (!dotCupotPath(cwdPath())) {
+                fprintf(stderr, RED "You should be inside a cupot repository to run this command\n" RESET "try running cupot init\n");
+                return 1;
+        }
+
         if (argc != 4) {
                 printf("Usage: cupot set -m \"message\" -s shortcut-name\n");
                 return 1;
@@ -152,6 +157,11 @@ int setCommand(int argc, char *argv[]) {
 }
 
 int replaceCommand(int argc, char *argv[]) {
+        if (!dotCupotPath(cwdPath())) {
+                fprintf(stderr, RED "You should be inside a cupot repository to run this command\n" RESET "try running cupot init\n");
+                return 1;
+        }
+
         if (argc != 4) {
                 printf("Usage: cupot replace -m \"message\" -s shortcut-name\n");
                 return 1;
@@ -185,6 +195,11 @@ int replaceCommand(int argc, char *argv[]) {
 }
 
 int removeCommand(int argc, char *argv[]) {
+        if (!dotCupotPath(cwdPath())) {
+                fprintf(stderr, RED "You should be inside a cupot repository to run this command\n" RESET "try running cupot init\n");
+                return 1;
+        }
+        
         if (argc != 2) {
                 fprintf(stderr, "Usage: cupot remove -s shortcut-name\n");
                 return 1;

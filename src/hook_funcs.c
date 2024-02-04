@@ -207,3 +207,8 @@ HOOK_RESULT indentation_check(char* path) {
 
         return req_t > 0 ? HOOK_FAILED : HOOK_PASSED;
 }
+
+HOOK_RESULT format_check(char* path) {
+        if (strchr(BaseName(path), '.') == NULL) return HOOK_SKIPPED;
+        return (checkExtension(path, 6, "txt", "c", "cpp", "wav", "mp4", "mp3") || strchr(path, '.') == NULL) ? HOOK_PASSED : HOOK_FAILED;
+}

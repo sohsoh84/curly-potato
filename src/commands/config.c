@@ -70,7 +70,7 @@ int configCommand(int argc, char *argv[]) {
         char* filePath = NULL;
         if (!isGlobal) {
                 if (!dotCupotPath(cwdPath())) {
-                        fprintf(stderr, "there is no cupot repository initalized here!!\n");
+                        fprintf(stderr, RED "You should be inside a cupot repository to run this command\n" RESET "try running cupot init\n");
                         return 1;
                 }
 

@@ -23,7 +23,7 @@ void printLine(FILE* stream, char* file_name, char* line, int lc, const char* CO
 
 int commitDiff(int ignore_unmatch_files, FILE* stream, char* commit_id1, char* commit_id2, int conflict_manager) {
         if (!dotCupotPath(cwdPath())) {
-                printf("you should be inside a cupot repository\n");
+                fprintf(stderr, RED "You should be inside a cupot repository to run this command\n" RESET "try running cupot init\n");
                 return 1;
         }
 

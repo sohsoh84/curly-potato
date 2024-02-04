@@ -36,3 +36,9 @@ test reset and the tracker in reset
 
 TODO: hard test diff fucntion
 
+//////
+merge clean
+merge with colored diff
+file names in diff
+test branch in stash
+test diff with line begin and line end

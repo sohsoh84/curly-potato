@@ -16,6 +16,11 @@
 #include <string.h>
 
 int mergeCommand(int argc, char *argv[]) {
+        if (!dotCupotPath(cwdPath())) {
+                fprintf(stderr, RED "You should be inside a cupot repository to run this command\n" RESET "try running cupot init\n");
+                return 1;
+        }
+
         char USAGE[] = "Usage: cupot merge -b <branch1> <branch2>\n";
         if (argc != 3) {
                 printf("%s", USAGE);

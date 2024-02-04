@@ -104,7 +104,7 @@ void printCommit(CommitConfigs *config) {
 
 int logCommand(int argc, char *argv[]) {
         if (!dotCupotPath(cwdPath())) {
-                printf("Error: you should be in a cupot repository\n");
+                fprintf(stderr, RED "You should be inside a cupot repository to run this command\n" RESET "try running cupot init\n");
                 return 1;
         }
 
