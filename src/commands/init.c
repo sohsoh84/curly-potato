@@ -5,6 +5,7 @@
 #include "../configs.h"
 #include "../constants.h"
 #include "../tracker.h"
+
 #include <stdio.h>
 
 char* createInitCommit(char* name, char* email) {

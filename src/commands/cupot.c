@@ -1,4 +1,5 @@
 #include "cupot.h"
+
 #include <stdio.h>
 
 const static char ASCII_ART_STR[] = "\

@@ -1,13 +1,13 @@
 #include "revert.h"
 #include "commit.h"
 #include "checkout.h"
-
 #include "../commits.h"
 #include "../vcs.h"
 #include "../paths.h"
 #include "../staging_area.h"
 #include "../dotcupot.h"
 #include "../constants.h"
+
 #include <stdio.h>
 #include <string.h>
 

@@ -1,6 +1,7 @@
 #include "merge.h"
 #include "diff.h"
 #include "commit.h"
+#include "checkout.h"
 #include "../dotcupot.h"
 #include "../branch.h"
 #include "../paths.h"
@@ -9,7 +10,6 @@
 #include "../tracker.h"
 #include "../staging_area.h"
 #include "../syscalls.h"
-#include "checkout.h"
 
 #include <stdio.h>
 #include <stdlib.h>

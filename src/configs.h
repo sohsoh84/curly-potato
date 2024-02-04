@@ -23,5 +23,4 @@ char* getEntry(Config* config, const char* key);
 int removeEntry(Config* config, const char* key);
 int readConfigFile(FILE *file, Config* config);
 int writeConfigFile(FILE* file, Config* config);
-// void freeConfig(struct Config* config); TODO:
 #endif

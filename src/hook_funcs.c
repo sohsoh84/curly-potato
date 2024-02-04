@@ -1,14 +1,15 @@
 #include "hook_funcs.h"
 #include "hook.h"
 #include "utils.h"
+#include "paths.h"
+#include "syscalls.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <libgen.h>
 #include <sys/stat.h>
-#include "paths.h"
-#include "syscalls.h"
-#include "libgen.h"
 
 const int CHAR_LIM = 20000;
 const int FILE_SIZE_LIMIT = 5 * 1024 * 1024;

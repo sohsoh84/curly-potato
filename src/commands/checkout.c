@@ -96,9 +96,6 @@ int checkoutCommand(int argc, char *argv[]) {
                 return 1;
         }
 
-
-        // TODO: check if checkout is performable(there is no uncommited changes)
-
         char* all_brances[MAX_BRANCHES];
         int branch_cnt = branches(all_brances);
 

@@ -1,7 +1,8 @@
+#include "syscalls.h"
 #include "paths.h"
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "syscalls.h"
 
 int createRequiredDirectories(char* path) {
         char command[PATH_MAX];
@@ -13,8 +14,6 @@ int createRequiredDirectories(char* path) {
 
         return 0;
 }
-
-// TODO: keep permissions
 
 int removeFileDir(char* path) {
         if (fileExists(path)) {

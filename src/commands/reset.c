@@ -5,6 +5,7 @@
 #include "../commits.h"
 #include "../tracker.h"
 #include "../dotcupot.h"
+
 #include <glob.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -83,8 +84,6 @@ int resetCommand(int argc, char *argv[]) {
                         unstaged_successfully += reset(argv[i]);
         }
 
-        // if the code reaches this point, then the .tmp_stage directory has been created and should \
-                be dealt with // TODO:
         if (unstaged_successfully == 0) {
                 //undoBackupStagingArea();
                 printf("nothing unstaged!\n");

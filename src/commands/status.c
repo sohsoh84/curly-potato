@@ -14,7 +14,7 @@
 #include <dirent.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "sys/stat.h"
+#include <sys/stat.h>
 
 
 enum FILE_STATUS {
@@ -160,7 +160,7 @@ int statusCommand(int argc, char *argv[]) {
                 projectName(cwdPath()));
 
         int _ = 0;
-        printStatusOfFiles(starting_path, cwdPath()); // TODO:
+        printStatusOfFiles(starting_path, cwdPath());
         printRemoveStatus(commitTrackerPath(getCWC()), starting_path, cwdPath());
         return 0;
 }

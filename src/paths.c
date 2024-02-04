@@ -1,15 +1,16 @@
-#include <paths.h>
+#include "paths.h"
+#include "constants.h"
+#include "dotcupot.h"
+
 #include <pwd.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <stdio.h>
 #include <string.h>
 #include <dirent.h>
 #include <libgen.h>
-#include "constants.h"
-#include "dotcupot.h"
+#include <sys/stat.h>
+#include <sys/types.h>
 
 char *userHomePath() {
         return getpwuid(getuid()) -> pw_dir;
@@ -30,7 +31,7 @@ char *cwdPath() {
         return cwd;
 }
 
-char* mergePaths(const char* path1, const char* path2) { // TODO: use realpath
+char* mergePaths(const char* path1, const char* path2) {
         char* result = (char*) calloc(strlen(path1) + strlen(path2) + 2, sizeof(char));
         strcpy(result, path1);
         strcat(result, "/");

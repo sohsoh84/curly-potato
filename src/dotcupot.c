@@ -3,14 +3,15 @@
 #include "paths.h"
 #include "commits.h"
 #include "configs.h"
+
 #include <libgen.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-char* dotCupotPath(char *path_) { // TODO: it only goes until user path
+char* dotCupotPath(char *path_) {
         char* path = strdup(path_);
-        while (isSubdirectory(userHomePath(), path)) { // TODO: check if it is a directory
+        while (isSubdirectory(userHomePath(), path)) {
                 if (fileExists(mergePaths(path, ".cupot")))
                         return mergePaths(path, ".cupot");
 

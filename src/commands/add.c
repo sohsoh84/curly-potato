@@ -1,4 +1,11 @@
 #include "add.h"
+#include "../dotcupot.h"
+#include "../paths.h"
+#include "../staging_area.h"
+#include "../syscalls.h"
+#include "../constants.h"
+#include "../tracker.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -6,12 +13,6 @@
 #include <libgen.h>
 #include <dirent.h>
 #include <ctype.h>
-#include "../dotcupot.h"
-#include "../paths.h"
-#include "../staging_area.h"
-#include "../syscalls.h"
-#include "../constants.h"
-#include "../tracker.h"
 
 static int addToStageingArea(char* stage_path_, char* file_path_) {
         if (stage_path_ == NULL || stage_path_ == NULL) {
@@ -112,7 +113,7 @@ char* stagingStatusString(char* directoryName, int n, int lvl, int* total_unstag
                         if (!fileExists(stageFilePath(filePath)))
                                 tmp_unstaged++;
                         char status_[50];
-                        strcpy(status_, (tmp_unstaged ?  RED " unstaged" RESET "\n" : GREEN " staged" RESET "\n")); // TODO: more complex status
+                        strcpy(status_, (tmp_unstaged ?  RED " unstaged" RESET "\n" : GREEN " staged" RESET "\n"));
                         tmp = concat(result, status_);
                         free(result);
                         result = tmp;
@@ -130,7 +131,7 @@ char* stagingStatusString(char* directoryName, int n, int lvl, int* total_unstag
                         result = tmp;
 
                         char status_[50];
-                        strcpy(status_, (tmp_unstaged ?  RED " unstaged" RESET "\n" : GREEN " staged" RESET "\n")); // TODO: more complex status
+                        strcpy(status_, (tmp_unstaged ?  RED " unstaged" RESET "\n" : GREEN " staged" RESET "\n"));
                         tmp = concat(result, status_);
                         free(result);
                         result = tmp;
@@ -217,8 +218,6 @@ int addCommand(int argc, char *argv[]) {
                         staged_successfully += stage(argv[i]);
         }
 
-        // if the code reaches this point, then the .tmp_stage directory has been created and should \
-                be dealt with // TODO:
         if (staged_successfully == 0) {
                 undoBackupStagingArea();
                 printf("nothing staged!\n");

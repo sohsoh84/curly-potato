@@ -9,8 +9,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-// TODO: check with new argmuent structure
-
 static int is_alias(const char* key) {
         return strncmp(key, "alias.", 6) == 0;
 }
@@ -57,10 +55,6 @@ int configCommand(int argc, char *argv[]) {
                 fprintf(stderr, "the key and the value shouldn't contain = char!\n");
                 return 1;
         }
-
-        // TODO: check if the strings are user.name and user.email
-        // TODO: throw some errors bruh :)
-
 
         if (is_alias(key) && !is_valid_alias(value)) {
                 fprintf(stderr, "Invalid command in alias value!\n");

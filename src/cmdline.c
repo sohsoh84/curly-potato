@@ -1,5 +1,4 @@
 #include "cmdline.h"
-
 #include "commands/cupot.h"
 #include "commands/config.h"
 #include "commands/init.h"
@@ -20,6 +19,7 @@
 #include "commands/tree.h"
 #include "dotcupot.h"
 #include "paths.h"
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
