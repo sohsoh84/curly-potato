@@ -7,6 +7,7 @@
 #include "../staging_area.h"
 #include "../dotcupot.h"
 #include "../constants.h"
+#include "../utils.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -43,8 +44,10 @@ int revertCommand(int argc, char *argv[]) {
         char commit_message[MAX_COMMIT_MESSAGE_LEN] = "\0";
         int hard_revert = 1;
         
-        if (argc == 1) configs = readCommit(argv[0]);
-        else if (argc == 2) {
+        if (argc == 1) {
+                if (!strcmp(argv[0], "-n")) configs = readCommit(getCWC());
+                else configs = readCommit(argv[0]);
+        } else if (argc == 2) {
                 if (strcmp(argv[0], "-n")) {
                         printf("invalid argument\n");
                         return 1;
@@ -67,6 +70,20 @@ int revertCommand(int argc, char *argv[]) {
                 return 1;
         }
 
+
+        CommitConfigs* head_config = getCommitConfigs(getCWC());
+        while (head_config && !strcmp(head_config -> id, configs -> id)) {
+                if (strlen(head_config->merge_id)) {
+                        printf("there is a merge commit in between, do you want to revert?\n");
+                        char res[42];
+                        fgets(res, 42, stdin);
+                        strip(res);
+
+                        if (!strcmp(res, "yes")) {
+                                break;
+                        } else return 1;
+                }
+        }
 
         if (strlen(configs->merge_id)) {
                 fprintf(stderr, "you can't revert to a merge commit\n");
